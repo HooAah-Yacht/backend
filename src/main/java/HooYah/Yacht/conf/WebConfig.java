@@ -19,7 +19,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // 모든 경로에 대해
-                        .allowedOrigins("http://localhost:3000", "https://localhost:3000")
+                        .allowedOrigins("http://localhost:3000", "https://localhost:3000", "http://localhost:51964", "https://localhost:51964")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .exposedHeaders("token")
