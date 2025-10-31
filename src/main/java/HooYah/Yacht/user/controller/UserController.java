@@ -12,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,11 +35,18 @@ public class UserController {
     public ResponseEntity login(@RequestBody @Valid LoginDto dto, HttpServletResponse response) {
         User user = userService.login(dto);
         String token = JWTUtil.generateToken(user.getId());
-        String cookie = JWTUtil.generateCookie(token);
 
-        response.addHeader("Set-Cookie", cookie);
+        return ResponseEntity.ok().body(token);
+    }
 
-        return ResponseEntity.ok().body(null);
+    @GetMapping("/public/user/email-check")
+    public ResponseEntity emailCheck(@RequestParam("email") String email) {
+        boolean isExist = userService.findByEmail(email).isPresent();
+
+        if(isExist)
+            return ResponseEntity.ok().body("exist");
+        else
+            return ResponseEntity.ok().body("not exist");
     }
 
     @GetMapping("/api/user")

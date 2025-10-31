@@ -25,7 +25,8 @@ public class TokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        Optional<String> token = getTokenFromCookies("token", request);
+        Optional<String> token = getTokenFromBearer(request);
+
         if (token.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
@@ -40,17 +41,14 @@ public class TokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    public Optional<String> getTokenFromCookies(String tokenName, HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            Optional<Cookie> tokenCookie = Arrays.stream(cookies)
-                    .filter(cookie -> tokenName.equals(cookie.getName()))
-                    .findFirst();
+    public Optional<String> getTokenFromBearer(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
 
-            if (tokenCookie.isPresent()) {
-                return Optional.of(tokenCookie.get().getValue());
-            }
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return Optional.empty();
         }
-        return Optional.empty();
+
+        String token = authHeader.substring(7);
+        return Optional.of(token);
     }
 }

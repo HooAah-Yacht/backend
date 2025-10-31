@@ -6,6 +6,7 @@ import HooYah.Yacht.user.domain.User;
 import HooYah.Yacht.user.dto.request.LoginDto;
 import HooYah.Yacht.user.dto.request.RegisterDto;
 import HooYah.Yacht.user.repository.UserRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,10 @@ public class UserService {
         return userRepository.findByEmail(dto.getEmail()).orElseThrow(
                 ()->new CustomException(ErrorCode.NOT_FOUND)
         );
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
 }
