@@ -32,9 +32,12 @@ public class UserService {
 
     @Transactional
     public User login(LoginDto dto) {
-        return userRepository.findByEmail(dto.getEmail()).orElseThrow(
+        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(
                 ()->new CustomException(ErrorCode.NOT_FOUND)
         );
+        user.login(dto.getEmail(), dto.getPassword(), passwordEncoder);
+
+        return user;
     }
 
     public Optional<User> findByEmail(String email) {
