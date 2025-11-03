@@ -12,11 +12,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
+@Slf4j
 public class TokenFilter extends OncePerRequestFilter {
 
     private final UserRepository userRepository;
@@ -35,8 +37,10 @@ public class TokenFilter extends OncePerRequestFilter {
         Long userId = JWTUtil.decodeToken(token.get());
         Optional<User> userOpt = userRepository.findById(userId);
 
-        if(userOpt.isPresent())
+        if(userOpt.isPresent()) {
+            log.info(String.format("token success [user id : %d]", userOpt.get().getId()));
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userOpt.get(), null));
+        }
 
         filterChain.doFilter(request, response);
     }
