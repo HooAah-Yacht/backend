@@ -44,7 +44,7 @@ public class YachtController {
     @GetMapping
     public ResponseEntity getYachtList(@AuthenticationPrincipal User user) {
         List<ResponseYachtDto> yachtList = yachtService.yachtList(user);
-        return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", yachtList));
+        return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", Map.of("list", yachtList)));
     }
 
     @GetMapping("/invite")
