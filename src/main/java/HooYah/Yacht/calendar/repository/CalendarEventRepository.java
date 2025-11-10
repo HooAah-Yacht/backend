@@ -12,8 +12,8 @@ import java.util.List;
  */
 @Repository
 public interface CalendarEventRepository extends JpaRepository<CalendarEvent, Long> {
-    
+
     List<CalendarEvent> findByPartId(Long partId);
-    
+
     List<CalendarEvent> findByStartDateBetween(LocalDate start, LocalDate end);
 }

@@ -34,6 +34,7 @@ public class Schedule {
     }
 
     public void update(LocalDate date) {
-        if (date != null) this.date = date;
+        if (date != null)
+            this.date = date;
     }
 }

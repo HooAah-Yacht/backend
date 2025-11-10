@@ -37,12 +37,13 @@ public class User {
     private String socialId;
 
     public void updatePassword(String newPassword, PasswordEncoder passwordEncoder) {
-        if(passwordEncoder.matches(newPassword, password)) {}
-            this.password = newPassword;
+        if (passwordEncoder.matches(newPassword, password)) {
+        }
+        this.password = newPassword;
     }
 
-    public void login(String email, String password,  PasswordEncoder passwordEncoder) {
-        if(passwordEncoder.matches(password, this.password) && email.equals(this.email))
+    public void login(String email, String password, PasswordEncoder passwordEncoder) {
+        if (passwordEncoder.matches(password, this.password) && email.equals(this.email))
             return;
 
         throw new CustomException(ErrorCode.BAD_REQUEST);

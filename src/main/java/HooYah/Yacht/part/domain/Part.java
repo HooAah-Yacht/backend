@@ -45,9 +45,13 @@ public class Part {
     }
 
     public void update(String name, String manufacturer, String model, Integer interval) {
-        if (name != null) this.name = name;
-        if (manufacturer != null) this.manufacturer = manufacturer;
-        if (model != null) this.model = model;
-        if (interval != null) this.interval = interval;
+        if (name != null)
+            this.name = name;
+        if (manufacturer != null)
+            this.manufacturer = manufacturer;
+        if (model != null)
+            this.model = model;
+        if (interval != null)
+            this.interval = interval;
     }
 }

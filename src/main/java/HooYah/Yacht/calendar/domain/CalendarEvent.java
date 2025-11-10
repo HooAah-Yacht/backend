@@ -42,9 +42,11 @@ public class CalendarEvent {
     }
 
     public void update(LocalDate startDate, LocalDate endDate, String content) {
-        if (startDate != null) this.startDate = startDate;
-        if (endDate != null) this.endDate = endDate;
-        if (content != null) this.content = content;
+        if (startDate != null)
+            this.startDate = startDate;
+        if (endDate != null)
+            this.endDate = endDate;
+        if (content != null)
+            this.content = content;
     }
 }
-

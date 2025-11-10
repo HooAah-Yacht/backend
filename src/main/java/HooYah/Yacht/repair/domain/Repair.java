@@ -40,7 +40,9 @@ public class Repair {
     }
 
     public void update(LocalDate repairDate, Part part) {
-        if (repairDate != null) this.repairDate = repairDate;
-        if (part != null) this.part = part;
+        if (repairDate != null)
+            this.repairDate = repairDate;
+        if (part != null)
+            this.part = part;
     }
 }

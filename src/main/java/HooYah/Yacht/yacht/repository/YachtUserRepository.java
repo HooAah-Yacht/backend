@@ -8,8 +8,8 @@ import java.util.List;
 
 @Repository
 public interface YachtUserRepository extends JpaRepository<YachtUser, Long> {
-    
+
     List<YachtUser> findByUserId(Long userId);
-    
+
     List<YachtUser> findByYachtId(Long yachtId);
 }
