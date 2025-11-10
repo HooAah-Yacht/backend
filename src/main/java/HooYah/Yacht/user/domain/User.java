@@ -33,24 +33,28 @@ public class User {
     @Column
     private String name;
 
+    @Column(name = "social_id")
+    private String socialId;
+
     public void updatePassword(String newPassword, PasswordEncoder passwordEncoder) {
-        if(passwordEncoder.matches(newPassword, password)) {}
-            this.password = newPassword;
+        if (passwordEncoder.matches(newPassword, password)) {
+        }
+        this.password = newPassword;
     }
 
-    public void login(String email, String password,  PasswordEncoder passwordEncoder) {
-        if(passwordEncoder.matches(password, this.password) && email.equals(this.email))
+    public void login(String email, String password, PasswordEncoder passwordEncoder) {
+        if (passwordEncoder.matches(password, this.password) && email.equals(this.email))
             return;
 
         throw new CustomException(ErrorCode.BAD_REQUEST);
     }
 
     @Builder
-    public User(String email, String password, String name) {
-        this.id = id;
+    public User(String email, String password, String name, String socialId) {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.socialId = socialId;
     }
 
 }
