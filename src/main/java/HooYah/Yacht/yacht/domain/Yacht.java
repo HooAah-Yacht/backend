@@ -3,9 +3,10 @@ package HooYah.Yacht.yacht.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
+/**
+ * ERD 기준 Yacht 엔티티 - id, name만 포함
+ * (추가 필드는 팀 협의 후 확장 예정)
+ */
 @Entity
 @Table(name = "yacht")
 @Getter
@@ -21,37 +22,4 @@ public class Yacht {
 
     @Column(nullable = false)
     private String name;
-
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    private Integer capacity;
-
-    @Column(name = "price_per_hour")
-    private BigDecimal pricePerHour;
-
-    private String location;
-
-    @Builder.Default
-    private Boolean available = Boolean.TRUE;
-
-    @Column(name = "thumbnail_path")
-    private String thumbnailPath;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = this.createdAt;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }
