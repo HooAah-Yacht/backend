@@ -7,7 +7,7 @@ import HooYah.Yacht.calendar.dto.response.CalendarInfo;
 import HooYah.Yacht.calendar.repository.CalendarRepository;
 import HooYah.Yacht.common.excetion.CustomException;
 import HooYah.Yacht.common.excetion.ErrorCode;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +72,7 @@ public class CalendarService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
     }
 
-    private void validateDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+    private void validateDateRange(OffsetDateTime startDate, OffsetDateTime endDate) {
         if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }

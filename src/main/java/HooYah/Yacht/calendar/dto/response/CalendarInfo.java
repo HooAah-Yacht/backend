@@ -1,7 +1,7 @@
 package HooYah.Yacht.calendar.dto.response;
 
 import HooYah.Yacht.calendar.domain.Calendar;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,8 +13,8 @@ public class CalendarInfo {
 
     private Long id;
     private Long partId;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
     private String content;
 
     public static CalendarInfo from(Calendar calendar) {
