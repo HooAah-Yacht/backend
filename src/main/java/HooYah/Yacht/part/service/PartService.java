@@ -12,6 +12,7 @@ import HooYah.Yacht.user.domain.User;
 import HooYah.Yacht.user.repository.YachtUserPort;
 import HooYah.Yacht.yacht.domain.Yacht;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +83,7 @@ public class PartService {
             return; // 정비 이력이 없는 경우 켈린더 알림 생성 / 수정하지 않음
 
         // 다음 repair date 구함
-        LocalDate nextRepairDate = part.nextRepairDate(lastRepair.get().getRepairDate());
+        OffsetDateTime nextRepairDate = part.nextRepairDate(lastRepair.get().getRepairDate());
 
         // 켈린더 최신화 (캘린더에 is update column 필요 -> 사용자가 설정한 캘린더는 수정하지 않음)
             // 사용자가 수정했다면 수정하지 않음

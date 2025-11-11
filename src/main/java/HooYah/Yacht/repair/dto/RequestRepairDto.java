@@ -1,7 +1,7 @@
 package HooYah.Yacht.repair.dto;
 
-import HooYah.Yacht.DateUtil;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,10 +12,6 @@ import lombok.Setter;
 public class RequestRepairDto {
 
     private Long id;
-    private String date;
-
-    public LocalDate getDate() {
-        return DateUtil.toLocalDate(date);
-    }
+    private OffsetDateTime date;
 
 }

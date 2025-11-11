@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,7 +53,7 @@ public class Part {
         this.interval = interval;
     }
 
-    public LocalDate nextRepairDate(LocalDate oldRepairDate) {
+    public OffsetDateTime nextRepairDate(OffsetDateTime oldRepairDate) {
         return oldRepairDate.plusMonths(interval);
     }
 

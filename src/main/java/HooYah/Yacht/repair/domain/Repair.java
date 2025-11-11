@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,9 +39,9 @@ public class Repair {
     private Part part;
 
     @Column
-    private LocalDate repairDate;
+    private OffsetDateTime repairDate;
 
-    public void updateRepairDate(LocalDate repairDate) {
+    public void updateRepairDate(OffsetDateTime repairDate) {
         this.repairDate = repairDate;
     }
 
