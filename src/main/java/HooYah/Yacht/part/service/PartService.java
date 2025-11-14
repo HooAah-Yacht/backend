@@ -35,8 +35,8 @@ public class PartService {
     }
 
     @Transactional
-    public void addPart(AddPartDto dto, User user) {
-        Yacht yacht = yachtUserPort.findYacht(dto.getYachtId(), user.getId());
+    public void addPart(Long yachtId, AddPartDto dto, User user) {
+        Yacht yacht = yachtUserPort.findYacht(yachtId, user.getId());
 
         Part newPart = Part
                 .builder()

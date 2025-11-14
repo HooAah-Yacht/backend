@@ -2,11 +2,13 @@ package HooYah.Yacht.yacht.service;
 
 import HooYah.Yacht.common.excetion.CustomException;
 import HooYah.Yacht.common.excetion.ErrorCode;
+import HooYah.Yacht.part.service.PartService;
 import HooYah.Yacht.user.domain.User;
 import HooYah.Yacht.user.repository.YachtUserPort;
 import HooYah.Yacht.user.repository.YachtUserRepository;
 import HooYah.Yacht.yacht.domain.Yacht;
 import HooYah.Yacht.yacht.dto.request.CreateYachtDto;
+import HooYah.Yacht.yacht.dto.request.CreateYachtDto.YachtInfo;
 import HooYah.Yacht.yacht.dto.request.UpdateYachtDto;
 import HooYah.Yacht.yacht.dto.response.ResponseYachtDto;
 import HooYah.Yacht.yacht.repository.YachtRepository;
@@ -23,14 +25,25 @@ public class YachtService {
     private final YachtRepository yachtRepository;
     private final YachtUserPort yachtUserPort;
     private final YachtUserRepository yachtUserRepository;
+    private final PartService partService;
 
+    @Transactional
     public void createYacht (CreateYachtDto dto, User user) {
+        Yacht createdYacht = createYacht(dto.getYacht(), user);
+
+        dto.getPartList().forEach(
+                part -> partService.addPart(createdYacht.getId(), part, user)
+        );
+    }
+
+    private Yacht createYacht (YachtInfo yachtInfo, User user) {
         Yacht yacht = yachtRepository.save(Yacht
                 .builder()
-                .name(dto.getName())
+                .name(yachtInfo.getName())
                 .build()
         );
         yachtUserPort.addUser(yacht, user);
+        return yacht;
     }
 
     @Transactional
