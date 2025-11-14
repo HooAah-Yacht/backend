@@ -1,11 +1,14 @@
 package HooYah.Yacht.yacht.controller;
 
 import HooYah.Yacht.common.SuccessResponse;
+import HooYah.Yacht.part.dto.response.PartDto;
 import HooYah.Yacht.user.domain.User;
 import HooYah.Yacht.yacht.dto.request.CreateYachtDto;
 import HooYah.Yacht.yacht.dto.request.InviteYachtDto;
+import HooYah.Yacht.yacht.dto.request.RequestDefaultPartDto;
 import HooYah.Yacht.yacht.dto.request.UpdateYachtDto;
 import HooYah.Yacht.yacht.dto.response.ResponseYachtDto;
+import HooYah.Yacht.yacht.service.YachtDefaultService;
 import HooYah.Yacht.yacht.service.YachtService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -16,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class YachtController {
 
     private final YachtService yachtService;
+    private final YachtDefaultService yachtDefaultService;
 
     @PostMapping
     public ResponseEntity createYacht(@RequestBody @Valid CreateYachtDto dto, @AuthenticationPrincipal User user) {
@@ -57,6 +62,12 @@ public class YachtController {
     public ResponseEntity inviteWithCode(@RequestBody @Valid InviteYachtDto dto, @AuthenticationPrincipal User user) {
         yachtService.inviteYachtByHash(dto.getCode(), user);
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", null));
+    }
+
+    @PostMapping("/part-list")
+    public ResponseEntity getDefaultPartList(@ModelAttribute @Valid RequestDefaultPartDto dto) {
+        List<PartDto> partList = yachtDefaultService.getPartList(dto.getName(), dto.getFile());
+        return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", partList));
     }
 
 }
