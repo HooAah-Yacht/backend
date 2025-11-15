@@ -1,6 +1,7 @@
 package HooYah.Yacht.calendar.service;
 
 import HooYah.Yacht.calendar.domain.Calendar;
+import HooYah.Yacht.calendar.domain.CalendarType;
 import HooYah.Yacht.calendar.dto.request.CalendarCreateRequest;
 import HooYah.Yacht.calendar.dto.request.CalendarUpdateRequest;
 import HooYah.Yacht.calendar.dto.response.CalendarInfo;
@@ -9,6 +10,8 @@ import HooYah.Yacht.common.excetion.CustomException;
 import HooYah.Yacht.common.excetion.ErrorCode;
 import HooYah.Yacht.part.domain.Part;
 import HooYah.Yacht.part.repository.PartRepository;
+import HooYah.Yacht.yacht.domain.Yacht;
+import HooYah.Yacht.yacht.repository.YachtRepository;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,16 +26,31 @@ public class CalendarService {
 
     private final CalendarRepository calendarRepository;
     private final PartRepository partRepository;
+    private final YachtRepository yachtRepository;
 
     @Transactional
     public CalendarInfo createCalendar(CalendarCreateRequest request) {
         validateDateRange(request.getStartDate(), request.getEndDate());
 
         Part part = findPartOrNull(request.getPartId());
+        Yacht yacht = findYachtOrNull(request.getYachtId());
+        
+        boolean completed = Boolean.TRUE.equals(request.getCompleted());
+        
+        boolean isSailingOrInspection = request.getType() == CalendarType.SAILING
+                || request.getType() == CalendarType.INSPECTION;
+
+        if (isSailingOrInspection && completed) {
+            // TODO: (세일링/점검) 완료 체크 후 문제 여부 확인, 정비 이력 등록 로직 추가
+        }
+        
         Calendar calendar = Calendar.builder()
+                .type(request.getType())
                 .part(part)
+                .yacht(yacht)
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
+                .completed(completed)
                 .content(request.getContent())
                 .build();
 
@@ -61,7 +79,16 @@ public class CalendarService {
 
         Calendar calendar = getCalendarOrThrow(id);
         Part part = findPartOrNull(request.getPartId());
-        calendar.update(part, request.getStartDate(), request.getEndDate(), request.getContent());
+        Yacht yacht = findYachtOrNull(request.getYachtId());
+        calendar.update(
+                request.getType(),
+                part,
+                yacht,
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getCompleted(),
+                request.getContent()
+        );
 
         return CalendarInfo.from(calendar);
     }
@@ -83,6 +110,15 @@ public class CalendarService {
         }
 
         return partRepository.findById(partId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+    }
+
+    private Yacht findYachtOrNull(Long yachtId) {
+        if (yachtId == null) {
+            return null;
+        }
+
+        return yachtRepository.findById(yachtId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
     }
 
