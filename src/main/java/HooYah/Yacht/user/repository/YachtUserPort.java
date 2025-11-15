@@ -2,6 +2,7 @@ package HooYah.Yacht.user.repository;
 
 import HooYah.Yacht.common.excetion.CustomException;
 import HooYah.Yacht.common.excetion.ErrorCode;
+import HooYah.Yacht.part.domain.Part;
 import HooYah.Yacht.user.domain.User;
 import HooYah.Yacht.user.domain.YachtUser;
 import HooYah.Yacht.yacht.domain.Yacht;
@@ -21,6 +22,12 @@ public class YachtUserPort {
     public Yacht findYacht(Long yachtId, Long userId) {
         return yachtUserRepository.findYacht(yachtId, userId).orElseThrow(
                 ()->new CustomException(ErrorCode.NOT_FOUND)
+        );
+    }
+
+    public void validateYachtUser(Yacht yacht, Long userId) {
+        yachtUserRepository.findYacht(yacht.getId(), userId).orElseThrow(
+                ()->new CustomException(ErrorCode.CONFLICT)
         );
     }
 
