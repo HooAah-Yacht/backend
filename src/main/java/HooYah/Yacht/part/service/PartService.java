@@ -44,6 +44,7 @@ public class PartService {
                 .manufacturer(dto.getManufacturer())
                 .model(dto.getModel())
                 .interval(dto.getInterval())
+                .latestMaintenanceDate(dto.getLatestMaintenanceDate())
                 .build();
         partRepository.save(newPart);
     }
@@ -53,10 +54,9 @@ public class PartService {
         Part part = partPort.findPart(dto.getId());
         yachtUserPort.validateYachtUser(part.getYacht(), user.getId());
 
-        part.update(dto.getName(), dto.getManufacturer(), dto.getModel());
+        part.update(dto.getName(), dto.getManufacturer(), dto.getModel(), dto.getInterval(), dto.getLatestMaintenanceDate());
 
         if(dto.getInterval() != null) {
-            part.updateInterval(dto.getInterval());
             updateCalenderAndAlarm(part);
         }
     }

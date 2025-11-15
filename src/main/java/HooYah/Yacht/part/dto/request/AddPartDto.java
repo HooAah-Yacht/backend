@@ -1,8 +1,11 @@
 package HooYah.Yacht.part.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
@@ -15,5 +18,8 @@ public class AddPartDto {
     private String manufacturer;
     private String model;
     private Long interval;
+
+    @JsonProperty("latestMaintenanceDate")
+    private LocalDate latestMaintenanceDate;
 
 }

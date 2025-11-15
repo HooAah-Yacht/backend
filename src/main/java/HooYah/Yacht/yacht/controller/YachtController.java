@@ -1,6 +1,8 @@
 package HooYah.Yacht.yacht.controller;
 
 import HooYah.Yacht.yacht.dto.YachtDto;
+import HooYah.Yacht.yacht.dto.request.CreateYachtWithPartsDto;
+import HooYah.Yacht.yacht.dto.response.ResponseYachtDto;
 import HooYah.Yacht.yacht.service.YachtService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +43,12 @@ public class YachtController {
     public ResponseEntity<Long> create(@Valid @RequestBody YachtDto.CreateRequest req) {
         Long id = yachtService.create(req);
         return ResponseEntity.ok(id);
+    }
+
+    @PostMapping("/api/yacht")
+    public ResponseEntity<ResponseYachtDto> createYachtWithParts(@Valid @RequestBody CreateYachtWithPartsDto dto) {
+        ResponseYachtDto result = yachtService.createYachtWithParts(dto);
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/api/yachts/{id}")

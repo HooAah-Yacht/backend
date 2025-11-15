@@ -1,5 +1,6 @@
 package HooYah.Yacht.yacht.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -16,5 +17,8 @@ public class UpdateYachtDto {
 
     @NotEmpty
     private String name;
+
+    @JsonProperty("alias")
+    private String alias;
 
 }
