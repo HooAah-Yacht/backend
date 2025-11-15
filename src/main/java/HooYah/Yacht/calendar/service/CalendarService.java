@@ -37,8 +37,11 @@ public class CalendarService {
         
         boolean completed = Boolean.TRUE.equals(request.getCompleted());
         
-        if (request.getType() == CalendarType.SAILING && completed) {
-            // TODO: 세일링 완료 체크 후 문제 유무 여부, 정비 이력 등록 로직 추가)
+        boolean isSailingOrInspection = request.getType() == CalendarType.SAILING
+                || request.getType() == CalendarType.INSPECTION;
+
+        if (isSailingOrInspection && completed) {
+            // TODO: (세일링/점검) 완료 체크 후 문제 여부 확인, 정비 이력 등록 로직 추가
         }
         
         Calendar calendar = Calendar.builder()
