@@ -1,6 +1,7 @@
 package HooYah.Yacht.part.dto.response;
 
 import HooYah.Yacht.part.domain.Part;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,4 +27,11 @@ public class PartDto {
         return partDto;
     }
 
+    @Builder
+    public PartDto(String name, String manufacturer, String model, Long interval) {
+        this.name = name;
+        this.manufacturer = manufacturer;
+        this.model = model;
+        this.interval = interval;
+    }
 }

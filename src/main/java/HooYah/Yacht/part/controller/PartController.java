@@ -43,7 +43,7 @@ public class PartController {
             @RequestBody @Valid AddPartDto dto,
             @AuthenticationPrincipal User user
     ) {
-        partService.addPart(dto, user);
+        partService.addPart(dto.getYachtId(), dto, user);
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", null));
     }
 
