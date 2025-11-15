@@ -7,6 +7,8 @@ import HooYah.Yacht.calendar.dto.response.CalendarInfo;
 import HooYah.Yacht.calendar.repository.CalendarRepository;
 import HooYah.Yacht.common.excetion.CustomException;
 import HooYah.Yacht.common.excetion.ErrorCode;
+import HooYah.Yacht.part.domain.Part;
+import HooYah.Yacht.part.repository.PartRepository;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,13 +22,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class CalendarService {
 
     private final CalendarRepository calendarRepository;
+    private final PartRepository partRepository;
 
     @Transactional
     public CalendarInfo createCalendar(CalendarCreateRequest request) {
         validateDateRange(request.getStartDate(), request.getEndDate());
 
+        Part part = findPartOrNull(request.getPartId());
         Calendar calendar = Calendar.builder()
-                .partId(request.getPartId())
+                .part(part)
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .content(request.getContent())
@@ -56,7 +60,8 @@ public class CalendarService {
         validateDateRange(request.getStartDate(), request.getEndDate());
 
         Calendar calendar = getCalendarOrThrow(id);
-        calendar.update(request.getPartId(), request.getStartDate(), request.getEndDate(), request.getContent());
+        Part part = findPartOrNull(request.getPartId());
+        calendar.update(part, request.getStartDate(), request.getEndDate(), request.getContent());
 
         return CalendarInfo.from(calendar);
     }
@@ -69,6 +74,15 @@ public class CalendarService {
 
     private Calendar getCalendarOrThrow(Long id) {
         return calendarRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+    }
+
+    private Part findPartOrNull(Long partId) {
+        if (partId == null) {
+            return null;
+        }
+
+        return partRepository.findById(partId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
     }
 

@@ -20,7 +20,7 @@ public class CalendarInfo {
     public static CalendarInfo from(Calendar calendar) {
         return CalendarInfo.builder()
                 .id(calendar.getId())
-                .partId(calendar.getPartId())
+                .partId(calendar.getPart() != null ? calendar.getPart().getId() : null)
                 .startDate(calendar.getStartDate())
                 .endDate(calendar.getEndDate())
                 .content(calendar.getContent())
