@@ -1,7 +1,11 @@
 package HooYah.Yacht.calendar.domain;
 
 import HooYah.Yacht.part.domain.Part;
+import HooYah.Yacht.yacht.domain.Yacht;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +29,10 @@ public class Calendar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CalendarType type;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "part_id")
     private Part part;
@@ -33,20 +41,37 @@ public class Calendar {
 
     private OffsetDateTime endDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "yacht_id")
+    private Yacht yacht;
+
+    @Column(nullable = false)
+    private boolean completed;
+
     private String content;
 
     @Builder
-    private Calendar(Part part, OffsetDateTime startDate, OffsetDateTime endDate, String content) {
+    private Calendar(CalendarType type, Part part, Yacht yacht, OffsetDateTime startDate, OffsetDateTime endDate,
+                     boolean completed, String content) {
+        this.type = type;
         this.part = part;
+        this.yacht = yacht;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.completed = completed;
         this.content = content;
     }
 
-    public void update(Part part, OffsetDateTime startDate, OffsetDateTime endDate, String content) {
+    public void update(CalendarType type, Part part, Yacht yacht, OffsetDateTime startDate, OffsetDateTime endDate,
+                       Boolean completed, String content) {
+        this.type = type;
         this.part = part;
+        this.yacht = yacht;
         this.startDate = startDate;
         this.endDate = endDate;
+        if (completed != null) {
+            this.completed = completed;
+        }
         this.content = content;
     }
 
@@ -57,5 +82,9 @@ public class Calendar {
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }
