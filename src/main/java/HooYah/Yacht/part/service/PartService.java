@@ -8,10 +8,10 @@ import HooYah.Yacht.part.dto.request.UpdatePartDto;
 import HooYah.Yacht.part.repository.PartPort;
 import HooYah.Yacht.part.repository.PartRepository;
 import HooYah.Yacht.repair.repository.RepairPort;
+import HooYah.Yacht.repair.service.RepairService;
 import HooYah.Yacht.user.domain.User;
 import HooYah.Yacht.user.repository.YachtUserPort;
 import HooYah.Yacht.yacht.domain.Yacht;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +27,7 @@ public class PartService {
     private final PartRepository partRepository;
     private final PartPort partPort;
     private final RepairPort repairPort;
+    private final RepairService repairService;
 
     public List<PartDto> getParListByYacht(Long yachtId, User user) {
         Yacht yacht = yachtUserPort.findYacht(yachtId, user.getId());
@@ -46,7 +47,10 @@ public class PartService {
                 .model(dto.getModel())
                 .interval(dto.getInterval())
                 .build();
-        partRepository.save(newPart);
+        newPart = partRepository.save(newPart);
+
+        if(dto.getLastRepair() != null)
+            repairService.addRepair(newPart.getId(), dto.getLastRepair(), user);
     }
 
     @Transactional
