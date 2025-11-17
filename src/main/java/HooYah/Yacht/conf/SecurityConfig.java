@@ -1,8 +1,11 @@
 package HooYah.Yacht.conf;
 
+import HooYah.Yacht.common.excetion.CustomException;
+import HooYah.Yacht.common.excetion.ErrorCode;
 import HooYah.Yacht.conf.security.TokenFilter;
 import HooYah.Yacht.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -14,13 +17,22 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final UserRepository userRepository;
+    private final HandlerExceptionResolver handlerExceptionResolver;
+
+    public SecurityConfig(
+            UserRepository userRepository,
+            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver
+    ) {
+        this.userRepository = userRepository;
+        this.handlerExceptionResolver = handlerExceptionResolver;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,7 +50,16 @@ public class SecurityConfig {
                                 return new AuthorizationDecision(false);
                             return new AuthorizationDecision(true);
                         }) // AnonymousAuthentication제외 모두 허용
-                        .anyRequest().permitAll()
+                        .anyRequest().denyAll()
+                )
+
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            handlerExceptionResolver.resolveException(request, response, null, new CustomException(ErrorCode.UN_AUTHORIZATION));
+                        })
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            handlerExceptionResolver.resolveException(request, response, null, new CustomException(ErrorCode.UN_AUTHORIZATION));
+                        })
                 )
 
                 .addFilterBefore(new TokenFilter(userRepository), LogoutFilter.class)
