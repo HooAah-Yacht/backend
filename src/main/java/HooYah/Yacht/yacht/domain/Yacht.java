@@ -1,5 +1,6 @@
 package HooYah.Yacht.yacht.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,10 +24,20 @@ public class Yacht {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String name;
 
+    @Column
+    private String nickName;
+
     public void updateName(String name) {
-        this.name = name;
+        if(name != null && !name.isEmpty())
+            this.name = name;
+    }
+
+    public void updateNickName(String nickName) {
+        if(nickName != null && !nickName.isEmpty())
+            this.nickName = nickName;
     }
 
 }

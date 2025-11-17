@@ -40,6 +40,7 @@ public class YachtService {
         Yacht yacht = yachtRepository.save(Yacht
                 .builder()
                 .name(yachtInfo.getName())
+                .nickName(yachtInfo.getNickName())
                 .build()
         );
         yachtUserPort.addUser(yacht, user);
@@ -50,6 +51,7 @@ public class YachtService {
     public void updateYacht(User user, UpdateYachtDto dto) {
         Yacht yacht = yachtUserPort.findYacht(dto.getId(), user.getId());
         yacht.updateName(dto.getName());
+        yacht.updateNickName(dto.getNickName());
     }
 
     public void deleteYacht() {
