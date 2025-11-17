@@ -3,6 +3,7 @@ package HooYah.Yacht.yacht.controller;
 import HooYah.Yacht.common.SuccessResponse;
 import HooYah.Yacht.part.dto.response.PartDto;
 import HooYah.Yacht.user.domain.User;
+import HooYah.Yacht.user.dto.response.UserInfoDto;
 import HooYah.Yacht.yacht.dto.request.CreateYachtDto;
 import HooYah.Yacht.yacht.dto.request.InviteYachtDto;
 import HooYah.Yacht.yacht.dto.request.RequestDefaultPartDto;
@@ -20,6 +21,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,6 +52,15 @@ public class YachtController {
     public ResponseEntity getYachtList(@AuthenticationPrincipal User user) {
         List<ResponseYachtDto> yachtList = yachtService.yachtList(user);
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", Map.of("list", yachtList)));
+    }
+
+    @GetMapping("/user/{yachtId}")
+    public ResponseEntity getYachtUserList(
+            @AuthenticationPrincipal User user ,
+            @PathVariable("yachtId") Long yachtId
+    ) {
+        List<UserInfoDto> response = yachtService.yachtUserList(yachtId, user);
+        return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", Map.of("userList", response)));
     }
 
     @GetMapping("/invite")

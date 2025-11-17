@@ -4,6 +4,8 @@ import HooYah.Yacht.common.excetion.CustomException;
 import HooYah.Yacht.common.excetion.ErrorCode;
 import HooYah.Yacht.part.service.PartService;
 import HooYah.Yacht.user.domain.User;
+import HooYah.Yacht.user.domain.YachtUser;
+import HooYah.Yacht.user.dto.response.UserInfoDto;
 import HooYah.Yacht.user.repository.YachtUserPort;
 import HooYah.Yacht.user.repository.YachtUserRepository;
 import HooYah.Yacht.yacht.domain.Yacht;
@@ -61,6 +63,16 @@ public class YachtService {
     public List<ResponseYachtDto> yachtList(User user) {
         List<Yacht> yachtList = yachtUserPort.findYachtListByUser(user.getId());
         return yachtList.stream().map(ResponseYachtDto::of).toList();
+    }
+
+    @Transactional
+    public List<UserInfoDto> yachtUserList(Long yachtId, User user) {
+        Yacht yacht = yachtUserPort.findYacht(yachtId, user.getId());
+        return yacht.getYachtUser()
+                .stream()
+                .map(YachtUser::getUser)
+                .map(UserInfoDto::of)
+                .toList();
     }
 
     public long getYachtCode(Long yachtId, User user) {
