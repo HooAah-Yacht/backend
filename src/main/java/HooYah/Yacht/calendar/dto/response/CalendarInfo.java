@@ -19,6 +19,7 @@ public class CalendarInfo {
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private boolean completed;
+    private boolean byUser;
     private String content;
 
     public static CalendarInfo from(Calendar calendar) {
@@ -30,6 +31,7 @@ public class CalendarInfo {
                 .startDate(calendar.getStartDate())
                 .endDate(calendar.getEndDate())
                 .completed(calendar.isCompleted())
+                .byUser(calendar.isByUser())
                 .content(calendar.getContent())
                 .build();
     }
