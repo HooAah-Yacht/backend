@@ -17,4 +17,6 @@ public class UpdateYachtDto {
     @NotEmpty
     private String name;
 
+    private String nickName;
+
 }

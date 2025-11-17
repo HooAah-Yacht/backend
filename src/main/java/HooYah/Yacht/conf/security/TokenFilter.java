@@ -3,6 +3,8 @@ package HooYah.Yacht.conf.security;
 import HooYah.Yacht.user.JWTUtil;
 import HooYah.Yacht.user.domain.User;
 import HooYah.Yacht.user.repository.UserRepository;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -28,13 +30,20 @@ public class TokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         Optional<String> token = getTokenFromBearer(request);
+        Long userId;
 
-        if (token.isEmpty()) {
+        if(token.isEmpty()){
             filterChain.doFilter(request, response);
             return;
         }
 
-        Long userId = JWTUtil.decodeToken(token.get());
+        try{
+            userId = JWTUtil.decodeToken(token.get());
+        } catch(JwtException e){
+            filterChain.doFilter(request, response); // when thrown jwt Exception (by expired, strange token, ...) : just ignore all
+            return;
+        }
+
         Optional<User> userOpt = userRepository.findById(userId);
 
         if(userOpt.isPresent()) {
