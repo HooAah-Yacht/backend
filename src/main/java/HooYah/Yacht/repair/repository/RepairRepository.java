@@ -11,4 +11,7 @@ public interface RepairRepository extends JpaRepository<Repair, Long> {
     @Query("select r from Repair r where r.part.id = :partId")
     List<Repair> findRepairListByPart (@Param("partId") Long partId);
     Optional<Repair> findByIdOrderByRepairDateDesc(Long id);
+
+    @Query("select r from Repair r where r.part.id in :partIdList order by r.repairDate desc limit 1")
+    List<Repair> findAllLastRepair(@Param("partIdList") List<Long> partIdList);
 }

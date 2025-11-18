@@ -13,8 +13,11 @@ import HooYah.Yacht.user.domain.User;
 import HooYah.Yacht.user.repository.YachtUserPort;
 import HooYah.Yacht.yacht.domain.Yacht;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +34,15 @@ public class PartService {
 
     public List<PartDto> getParListByYacht(Long yachtId, User user) {
         Yacht yacht = yachtUserPort.findYacht(yachtId, user.getId());
-        List<Part> partList = partRepository.findPartListByYacht(yachtId);
-        return partList.stream().map(PartDto::of).toList();
+
+        List<Part> partList = partRepository.findPartListByYacht(yacht.getId());
+        List<Repair> lastRepairList = repairPort.findAllLastRepair(partList);
+        Map<Long, Repair> lastRepairMap = lastRepairList.stream().collect(Collectors.toMap(
+                repair -> repair.getPart().getId(),
+                repair -> repair
+        ));
+
+        return partList.stream().map(part -> PartDto.of(part, lastRepairMap.get(part.getId()))).toList();
     }
 
     @Transactional
@@ -50,7 +60,7 @@ public class PartService {
         newPart = partRepository.save(newPart);
 
         if(dto.getLastRepair() != null)
-            repairService.addRepair(newPart.getId(), dto.getLastRepair(), user);
+            repairService.addRepair(newPart.getId(), null, dto.getLastRepair(), user);
     }
 
     @Transactional

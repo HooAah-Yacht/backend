@@ -1,6 +1,8 @@
 package HooYah.Yacht.part.dto.response;
 
 import HooYah.Yacht.part.domain.Part;
+import HooYah.Yacht.repair.domain.Repair;
+import java.time.OffsetDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,13 +19,16 @@ public class PartDto {
     private String model;
     private Long interval;
 
-    public static PartDto of(Part part) {
+    private OffsetDateTime lastRepairDate;
+
+    public static PartDto of(Part part, Repair lastRepair) {
         PartDto partDto = new PartDto();
         partDto.id = part.getId();
         partDto.name = part.getName();
         partDto.manufacturer = part.getManufacturer();
         partDto.model = part.getModel();
         partDto.interval = part.getInterval();
+        partDto.lastRepairDate = lastRepair!=null ? lastRepair.getRepairDate() : null;
         return partDto;
     }
 
