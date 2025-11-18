@@ -13,5 +13,6 @@ public class RequestRepairDto {
 
     private Long id;
     private OffsetDateTime date;
+    private String content;
 
 }

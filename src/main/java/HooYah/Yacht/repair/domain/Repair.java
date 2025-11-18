@@ -41,8 +41,16 @@ public class Repair {
     @Column
     private OffsetDateTime repairDate;
 
+    @Column
+    private String content;
+
     public void updateRepairDate(OffsetDateTime repairDate) {
         this.repairDate = repairDate;
+    }
+
+    public void updateContent(String content) {
+        if(content != null && !content.isEmpty())
+            this.content = content;
     }
 
 }
