@@ -5,6 +5,7 @@ import HooYah.Yacht.common.excetion.ErrorCode;
 import HooYah.Yacht.part.domain.Part;
 import HooYah.Yacht.repair.domain.Repair;
 import HooYah.Yacht.part.repository.PartRepository;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,10 @@ public class RepairPort {
 
     public Optional<Repair> findLastRepair(Part part) {
         return repairRepository.findByIdOrderByRepairDateDesc(part.getId());
+    }
+
+    public List<Repair> findAllLastRepair(List<Part> partList) {
+        return repairRepository.findAllLastRepair(partList.stream().map(Part::getId).toList());
     }
 
 }

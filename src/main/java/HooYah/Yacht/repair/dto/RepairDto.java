@@ -15,6 +15,7 @@ public class RepairDto {
 
     private Long id;
     private OffsetDateTime repairDate;
+    private String content;
     private UserInfoDto user;
 
     public static RepairDto of(Repair repair) {
@@ -22,6 +23,7 @@ public class RepairDto {
         repairDto.id = repair.getId();
         repairDto.repairDate = repair.getRepairDate();
         repairDto.user = UserInfoDto.of(repair.getUser());
+        repairDto.content = repair.getContent() != null ?  repair.getContent() : "";
         return repairDto;
     }
 
