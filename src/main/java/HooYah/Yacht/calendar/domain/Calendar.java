@@ -48,22 +48,26 @@ public class Calendar {
     @Column(nullable = false)
     private boolean completed;
 
+    @Column(nullable = false)
+    private boolean byUser; // 사용자가 직접 수정했는지 여부
+
     private String content;
 
     @Builder
     private Calendar(CalendarType type, Part part, Yacht yacht, OffsetDateTime startDate, OffsetDateTime endDate,
-                     boolean completed, String content) {
+                     boolean completed, boolean byUser, String content) {
         this.type = type;
         this.part = part;
         this.yacht = yacht;
         this.startDate = startDate;
         this.endDate = endDate;
         this.completed = completed;
+        this.byUser = byUser;
         this.content = content;
     }
 
     public void update(CalendarType type, Part part, Yacht yacht, OffsetDateTime startDate, OffsetDateTime endDate,
-                       Boolean completed, String content) {
+                       Boolean completed, Boolean byUser, String content) {
         this.type = type;
         this.part = part;
         this.yacht = yacht;
@@ -71,6 +75,9 @@ public class Calendar {
         this.endDate = endDate;
         if (completed != null) {
             this.completed = completed;
+        }
+        if (byUser != null) {
+            this.byUser = byUser;
         }
         this.content = content;
     }
@@ -86,5 +93,9 @@ public class Calendar {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public void markAsUserModified() {
+        this.byUser = true;
     }
 }

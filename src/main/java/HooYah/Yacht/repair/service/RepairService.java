@@ -1,5 +1,6 @@
 package HooYah.Yacht.repair.service;
 
+import HooYah.Yacht.calendar.service.CalendarService;
 import HooYah.Yacht.common.excetion.CustomException;
 import HooYah.Yacht.common.excetion.ErrorCode;
 import HooYah.Yacht.part.domain.Part;
@@ -26,6 +27,7 @@ public class RepairService {
     private final PartPort partPort;
     private final YachtUserPort yachtUserPort;
     private final RepairPort repairPort;
+    private final CalendarService calendarService;
 
     @Transactional
     public List<RepairDto> getRepairListByPart(
@@ -89,24 +91,9 @@ public class RepairService {
     }
 
     private void updateCalenderAndAlarm(Part part) {
-        if (part.getInterval() == null)
-            return; // part에 interval정보가 없다면 알림 켈린더 생성 / 수정하지 않음
-
-        // 이전 repair 정보가 있는지 확인
-        Optional<Repair> lastRepair = repairPort.findLastRepair(part);
-
-        if(lastRepair.isEmpty())
-            return; // 정비 이력이 없는 경우 켈린더 알림 생성 / 수정하지 않음
-
-        // 다음 repair date 구함
-        OffsetDateTime nextRepairDate = part.nextRepairDate(lastRepair.get().getRepairDate());
-
-        // 켈린더 최신화 (캘린더에 is update column 필요 -> 사용자가 설정한 캘린더는 수정하지 않음)
-        // 사용자가 수정했다면 수정하지 않음
-        // next repair date가 오늘 이후라면 -> 수정함
-        // next repqir date가 오늘 이전이라면 -> 오늘로 캘린더 생성?
-        // 알림
-        // 이전 알림의 날짜를 수정함 : 다른 로직 없어도 됨 그냥 수정
+        calendarService.autoCreatePartTypeCalendar(part);
+        
+        // TODO: 알림 로직 추가
     }
 
 }

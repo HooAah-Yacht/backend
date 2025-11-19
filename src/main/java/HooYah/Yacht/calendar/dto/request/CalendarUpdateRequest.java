@@ -26,6 +26,8 @@ public class CalendarUpdateRequest {
 
     private Boolean completed;
 
+    private Boolean byUser;
+
     private String content;
 }
 
