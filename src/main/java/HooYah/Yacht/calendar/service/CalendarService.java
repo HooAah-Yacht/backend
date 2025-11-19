@@ -43,7 +43,9 @@ public class CalendarService {
         Yacht yacht = findYachtOrNull(request.getYachtId());
         
         boolean completed = Boolean.TRUE.equals(request.getCompleted());
-        boolean byUser = Boolean.TRUE.equals(request.getByUser());
+        boolean byUser = request.getByUser() != null 
+                ? Boolean.TRUE.equals(request.getByUser())
+                : (request.getType() == CalendarType.SAILING || request.getType() == CalendarType.INSPECTION);
         
         // 같은 부품에 하나의 캘린더만 존재하도록 처리
         if (request.getType() == CalendarType.PART && part != null) {
