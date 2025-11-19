@@ -8,13 +8,16 @@ import HooYah.Yacht.part.dto.request.UpdatePartDto;
 import HooYah.Yacht.part.repository.PartPort;
 import HooYah.Yacht.part.repository.PartRepository;
 import HooYah.Yacht.repair.repository.RepairPort;
+import HooYah.Yacht.repair.service.RepairService;
 import HooYah.Yacht.user.domain.User;
 import HooYah.Yacht.user.repository.YachtUserPort;
 import HooYah.Yacht.yacht.domain.Yacht;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +30,19 @@ public class PartService {
     private final PartRepository partRepository;
     private final PartPort partPort;
     private final RepairPort repairPort;
+    private final RepairService repairService;
 
     public List<PartDto> getParListByYacht(Long yachtId, User user) {
         Yacht yacht = yachtUserPort.findYacht(yachtId, user.getId());
-        List<Part> partList = partRepository.findPartListByYacht(yachtId);
-        return partList.stream().map(PartDto::of).toList();
+
+        List<Part> partList = partRepository.findPartListByYacht(yacht.getId());
+        List<Repair> lastRepairList = repairPort.findAllLastRepair(partList);
+        Map<Long, Repair> lastRepairMap = lastRepairList.stream().collect(Collectors.toMap(
+                repair -> repair.getPart().getId(),
+                repair -> repair
+        ));
+
+        return partList.stream().map(part -> PartDto.of(part, lastRepairMap.get(part.getId()))).toList();
     }
 
     @Transactional
@@ -46,7 +57,10 @@ public class PartService {
                 .model(dto.getModel())
                 .interval(dto.getInterval())
                 .build();
-        partRepository.save(newPart);
+        newPart = partRepository.save(newPart);
+
+        if(dto.getLastRepair() != null)
+            repairService.addRepair(newPart.getId(), null, dto.getLastRepair(), user);
     }
 
     @Transactional

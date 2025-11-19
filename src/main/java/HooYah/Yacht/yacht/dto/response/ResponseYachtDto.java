@@ -12,11 +12,13 @@ public class ResponseYachtDto {
 
     private Long id;
     private String name;
+    private String nickName;
 
     public static ResponseYachtDto of (Yacht yacht) {
         ResponseYachtDto responseYachtDto = new ResponseYachtDto();
         responseYachtDto.id = yacht.getId();
         responseYachtDto.name = yacht.getName();
+        responseYachtDto.nickName = yacht.getNickName();
         return responseYachtDto;
     }
 

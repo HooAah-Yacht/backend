@@ -41,7 +41,7 @@ public class RepairService {
     }
 
     @Transactional
-    public void addRepair(Long partId, OffsetDateTime repairDate, User user) {
+    public void addRepair(Long partId, String content, OffsetDateTime repairDate, User user) {
         Part part = partPort.findPart(partId);
         yachtUserPort.validateYachtUser(part.getYacht(), user.getId());
 
@@ -50,6 +50,7 @@ public class RepairService {
                 .part(part)
                 .user(user)
                 .repairDate(repairDate)
+                .content(content)
                 .build();
 
         repairRepository.save(repair);
@@ -60,7 +61,7 @@ public class RepairService {
     }
 
     @Transactional
-    public void updateRepair(Long repairId, OffsetDateTime updateDate, User user) {
+    public void updateRepair(Long repairId, String content, OffsetDateTime updateDate, User user) {
         Repair repair = repairRepository.findById(repairId).orElseThrow(
                 ()->new CustomException(ErrorCode.NOT_FOUND)
         );
@@ -69,6 +70,7 @@ public class RepairService {
         yachtUserPort.validateYachtUser(part.getYacht(), user.getId());
 
         repair.updateRepairDate(updateDate);
+        repair.updateContent(content);
 
         updateCalenderAndAlarm(part);
     }

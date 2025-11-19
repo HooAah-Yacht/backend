@@ -42,7 +42,7 @@ public class RepairController {
             @RequestBody @Valid RequestRepairDto dto,
             @AuthenticationPrincipal User user
     ) {
-        repairService.addRepair(dto.getId(), dto.getDate(), user);
+        repairService.addRepair(dto.getId(), dto.getContent(), dto.getDate(), user);
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", null));
     }
 
@@ -51,7 +51,7 @@ public class RepairController {
             @RequestBody @Valid RequestRepairDto dto,
             @AuthenticationPrincipal User user
     ) {
-        repairService.updateRepair(dto.getId(), dto.getDate(), user);
+        repairService.updateRepair(dto.getId(), dto.getContent(), dto.getDate(), user);
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", null));
     }
 
