@@ -30,8 +30,9 @@ public class CalendarController {
     private final CalendarService calendarService;
 
     @PostMapping
-    public ResponseEntity<SuccessResponse> createCalendar(@Valid @RequestBody CalendarCreateRequest request) {
-        CalendarInfo response = calendarService.createCalendar(request);
+    public ResponseEntity<SuccessResponse> createCalendar(@Valid @RequestBody CalendarCreateRequest request,
+                                                          @AuthenticationPrincipal User user) {
+        CalendarInfo response = calendarService.createCalendar(request, user);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new SuccessResponse(HttpStatus.CREATED, "success", response));
     }
