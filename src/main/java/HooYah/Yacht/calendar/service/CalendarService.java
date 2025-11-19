@@ -67,16 +67,7 @@ public class CalendarService {
                     
                     // 완료 상태로 생성하는 경우 정비 이력 추가
                     if (completed && user != null) {
-                        OffsetDateTime repairDate = OffsetDateTime.now();
-                        Repair repair = Repair.builder()
-                                .part(part)
-                                .user(user)
-                                .repairDate(repairDate)
-                                .build();
-                        repairRepository.save(repair);
-                        
-                        // 다음 정비일 자동 생성
-                        autoCreatePartTypeCalendar(part);
+                        handleCompletedCalendar(CalendarType.PART, part, null, part, user);
                     }
                     
                     return CalendarInfo.from(existingAutoCalendar);
@@ -102,29 +93,7 @@ public class CalendarService {
         
         // 완료 상태로 생성하는 경우 정비 이력 추가
         if (completed && user != null) {
-            if (saved.getType() == CalendarType.PART && saved.getPart() != null) {
-                // 부품 타입: 정비 이력 추가 및 다음 일정 자동 생성
-                OffsetDateTime repairDate = OffsetDateTime.now();
-                Repair repair = Repair.builder()
-                        .part(saved.getPart())
-                        .user(user)
-                        .repairDate(repairDate)
-                        .build();
-                repairRepository.save(repair);
-                
-                // 다음 정비일 자동 생성
-                autoCreatePartTypeCalendar(saved.getPart());
-            } else if ((saved.getType() == CalendarType.SAILING || saved.getType() == CalendarType.INSPECTION)
-                    && request.getPartId() != null && part != null) {
-                // 세일링/점검 타입: 문제가 있어서 정비 이력 추가 요청이 있는 경우
-                OffsetDateTime repairDate = OffsetDateTime.now();
-                Repair repair = Repair.builder()
-                        .part(part)
-                        .user(user)
-                        .repairDate(repairDate)
-                        .build();
-                repairRepository.save(repair);
-            }
+            handleCompletedCalendar(saved.getType(), saved.getPart(), request.getPartId(), part, user);
         }
         
         return CalendarInfo.from(saved);
@@ -182,29 +151,7 @@ public class CalendarService {
         );
 
         if (isCompleting && user != null) {
-            if (calendar.getType() == CalendarType.PART && calendar.getPart() != null) {
-                // 부품 타입: 정비 이력 추가 및 다음 일정 자동 생성
-                OffsetDateTime repairDate = OffsetDateTime.now();
-                Repair repair = Repair.builder()
-                        .part(calendar.getPart())
-                        .user(user)
-                        .repairDate(repairDate)
-                        .build();
-                repairRepository.save(repair);
-                
-                // 다음 정비일 자동 생성
-                autoCreatePartTypeCalendar(calendar.getPart());
-            } else if ((calendar.getType() == CalendarType.SAILING || calendar.getType() == CalendarType.INSPECTION)
-                    && request.getPartId() != null && part != null) {
-                // 세일링/점검 타입: 문제가 있어서 정비 이력 추가 요청이 있는 경우
-                OffsetDateTime repairDate = OffsetDateTime.now();
-                Repair repair = Repair.builder()
-                        .part(part)
-                        .user(user)
-                        .repairDate(repairDate)
-                        .build();
-                repairRepository.save(repair);
-            }
+            handleCompletedCalendar(calendar.getType(), calendar.getPart(), request.getPartId(), part, user);
         }
 
         return CalendarInfo.from(calendar);
@@ -292,6 +239,32 @@ public class CalendarService {
         if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
+    }
+
+    private void handleCompletedCalendar(CalendarType calendarType, Part calendarPart, Long requestPartId, Part part, User user) {
+        if (calendarType == CalendarType.PART && calendarPart != null) {
+            // 부품 타입: 정비 이력 추가 및 다음 일정 자동 생성
+            addRepairAndCreateNextCalendar(calendarPart, user);
+        } else if ((calendarType == CalendarType.SAILING || calendarType == CalendarType.INSPECTION)
+                && requestPartId != null && part != null) {
+            // 세일링/점검 타입: 문제가 있어서 정비 이력 추가 요청이 있는 경우
+            addRepair(part, user);
+        }
+    }
+
+    private void addRepairAndCreateNextCalendar(Part part, User user) {
+        addRepair(part, user);
+        autoCreatePartTypeCalendar(part);
+    }
+
+    private void addRepair(Part part, User user) {
+        OffsetDateTime repairDate = OffsetDateTime.now();
+        Repair repair = Repair.builder()
+                .part(part)
+                .user(user)
+                .repairDate(repairDate)
+                .build();
+        repairRepository.save(repair);
     }
 }
 
