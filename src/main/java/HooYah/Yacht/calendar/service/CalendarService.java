@@ -69,7 +69,7 @@ public class CalendarService {
                     
                     // 완료 상태로 생성하는 경우 정비 이력 추가
                     if (completed && user != null) {
-                        handleCompletedCalendar(CalendarType.PART, part, null, part, user);
+                        handleCompletedCalendar(existingAutoCalendar, null, part, user);
                     }
                     
                     return CalendarInfo.from(existingAutoCalendar);
@@ -95,7 +95,7 @@ public class CalendarService {
         
         // 완료 상태로 생성하는 경우 정비 이력 추가
         if (completed && user != null) {
-            handleCompletedCalendar(saved.getType(), saved.getPart(), request.getPartId(), part, user);
+            handleCompletedCalendar(saved, request.getPartId(), part, user);
         }
         
         return CalendarInfo.from(saved);
@@ -153,7 +153,7 @@ public class CalendarService {
         );
 
         if (isCompleting && user != null) {
-            handleCompletedCalendar(calendar.getType(), calendar.getPart(), request.getPartId(), part, user);
+            handleCompletedCalendar(calendar, request.getPartId(), part, user);
         }
 
         return CalendarInfo.from(calendar);
@@ -243,13 +243,17 @@ public class CalendarService {
         }
     }
 
-    private void handleCompletedCalendar(CalendarType calendarType, Part calendarPart, Long requestPartId, Part part, User user) {
+    private void handleCompletedCalendar(Calendar calendar, Long requestPartId, Part part, User user) {
+        CalendarType calendarType = calendar.getType();
+        Part calendarPart = calendar.getPart();
+        
         if (calendarType == CalendarType.PART && calendarPart != null) {
             // 부품 타입: 정비 이력 추가 및 다음 일정 자동 생성
             addRepairAndCreateNextCalendar(calendarPart, user);
         } else if ((calendarType == CalendarType.SAILING || calendarType == CalendarType.INSPECTION)
-                && requestPartId != null && part != null) {
-            // 세일링/점검 타입: 문제가 있어서 정비 이력 추가 요청이 있는 경우
+                && requestPartId != null && part != null
+                && part.getYacht().equals(calendar.getYacht())) {
+            // 세일링/점검 타입: 부품 id가 요트에 등록된 부품 id라면 정비 이력 추가
             addRepair(part, user);
         }
     }
