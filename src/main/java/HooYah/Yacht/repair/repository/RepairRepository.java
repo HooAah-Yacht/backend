@@ -17,8 +17,8 @@ public interface RepairRepository extends JpaRepository<Repair, Long> {
                 t.*
             from
                 ( 
-                    select Repair.* , ROW_NUMBER() OVER (PARTITION BY Repair.part_id ORDER BY repair_date) last_date
-                    from Repair
+                    select repair.* , ROW_NUMBER() OVER (PARTITION BY repair.part_id ORDER BY repair_date) last_date
+                    from repair
                 ) t
             where t.last_date = 1 """, nativeQuery = true)
     List<Repair> findAllLastRepair(@Param("partIdList") List<Long> partIdList);
