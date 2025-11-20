@@ -72,7 +72,12 @@ public class CalendarService {
                         handleCompletedCalendar(existingAutoCalendar, null, part, user);
                     }
                     
-                    return CalendarInfo.from(existingAutoCalendar);
+                    Yacht existingYacht = existingAutoCalendar.getYacht();
+                    List<Part> existingParts = null;
+                    if (existingYacht != null) {
+                        existingParts = partRepository.findPartListByYacht(existingYacht.getId());
+                    }
+                    return CalendarInfo.from(existingAutoCalendar, existingYacht, existingParts);
                 } else {
                     // 자동 생성 캘린더는 없지만 사용자가 생성한 캘린더가 있으면 기존 일정 삭제
                     existingPartCalendars.forEach(calendarRepository::delete);
@@ -98,12 +103,22 @@ public class CalendarService {
             handleCompletedCalendar(saved, request.getPartId(), part, user);
         }
         
-        return CalendarInfo.from(saved);
+        Yacht savedYacht = saved.getYacht();
+        List<Part> savedParts = null;
+        if (savedYacht != null) {
+            savedParts = partRepository.findPartListByYacht(savedYacht.getId());
+        }
+        return CalendarInfo.from(saved, savedYacht, savedParts);
     }
 
     public CalendarInfo getCalendar(Long id) {
         Calendar calendar = getCalendarOrThrow(id);
-        return CalendarInfo.from(calendar);
+        Yacht yacht = calendar.getYacht();
+        List<Part> parts = null;
+        if (yacht != null) {
+            parts = partRepository.findPartListByYacht(yacht.getId());
+        }
+        return CalendarInfo.from(calendar, yacht, parts);
     }
 
     public List<CalendarInfo> getCalendars(Long partId) {
@@ -112,7 +127,14 @@ public class CalendarService {
                 : calendarRepository.findAll();
 
         return calendars.stream()
-                .map(CalendarInfo::from)
+                .map(calendar -> {
+                    Yacht yacht = calendar.getYacht();
+                    List<Part> parts = null;
+                    if (yacht != null) {
+                        parts = partRepository.findPartListByYacht(yacht.getId());
+                    }
+                    return CalendarInfo.from(calendar, yacht, parts);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -156,7 +178,12 @@ public class CalendarService {
             handleCompletedCalendar(calendar, request.getPartId(), part, user);
         }
 
-        return CalendarInfo.from(calendar);
+        Yacht updatedYacht = calendar.getYacht();
+        List<Part> updatedParts = null;
+        if (updatedYacht != null) {
+            updatedParts = partRepository.findPartListByYacht(updatedYacht.getId());
+        }
+        return CalendarInfo.from(calendar, updatedYacht, updatedParts);
     }
 
     @Transactional
