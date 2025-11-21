@@ -252,8 +252,11 @@ public class CalendarService {
                 .findByPartAndTypeAndByUserFalse(part, CalendarType.PART);
 
         if (existingCalendarOpt.isPresent()) {
-            // 기존 캘린더가 있고 && next repair date가 오늘 이후라면 업데이트
+            // 기존 캘린더가 있으면 최신 정비일로 업데이트 (정비 이력이 변경되었을 수 있으므로)
             Calendar existingCalendar = existingCalendarOpt.get();
+            existingCalendar.updateLastRepairDate(lastRepairDate);
+            
+            // 예상 정비일은 미래일 때만 업데이트 (과거 일정은 업데이트하지 않음)
             if (nextRepairDate.isAfter(now) || nextRepairDate.isEqual(now)) {
                 existingCalendar.updateDates(nextRepairDate, nextRepairDate);
             }
@@ -268,6 +271,7 @@ public class CalendarService {
                     .completed(false)
                     .byUser(false)
                     .content(null)
+                    .lastRepairDate(lastRepairDate)
                     .build();
             calendarRepository.save(newCalendar);
         }

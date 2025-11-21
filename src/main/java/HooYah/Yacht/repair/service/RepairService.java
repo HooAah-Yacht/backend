@@ -83,7 +83,7 @@ public class RepairService {
 
         repairRepository.delete(repair);
 
-        updateCalenderAndAlarm(part, null);
+        calendarService.autoCreatePartTypeCalendar(part, null);
     }
 
     private void updateCalenderAndAlarm(Part part, OffsetDateTime repairDate) {

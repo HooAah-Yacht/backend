@@ -53,9 +53,11 @@ public class Calendar {
 
     private String content;
 
+    private OffsetDateTime lastRepairDate;
+
     @Builder
     private Calendar(CalendarType type, Part part, Yacht yacht, OffsetDateTime startDate, OffsetDateTime endDate,
-                     boolean completed, boolean byUser, String content) {
+                     boolean completed, boolean byUser, String content, OffsetDateTime lastRepairDate) {
         this.type = type;
         this.part = part;
         this.yacht = yacht;
@@ -64,10 +66,11 @@ public class Calendar {
         this.completed = completed;
         this.byUser = byUser;
         this.content = content;
+        this.lastRepairDate = lastRepairDate;
     }
 
     public void update(CalendarType type, Part part, Yacht yacht, OffsetDateTime startDate, OffsetDateTime endDate,
-                       Boolean completed, Boolean byUser, String content) {
+                       Boolean completed, Boolean byUser, String content, OffsetDateTime lastRepairDate) {
         this.type = type;
         this.part = part;
         this.yacht = yacht;
@@ -80,11 +83,16 @@ public class Calendar {
             this.byUser = byUser;
         }
         this.content = content;
+        this.lastRepairDate = lastRepairDate;
     }
 
     public void updateDates(OffsetDateTime startDate, OffsetDateTime endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public void updateLastRepairDate(OffsetDateTime lastRepairDate) {
+        this.lastRepairDate = lastRepairDate;
     }
 
     public void updateContent(String content) {
