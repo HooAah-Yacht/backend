@@ -217,24 +217,34 @@ public class CalendarService {
 
     @Transactional
     public void autoCreatePartTypeCalendar(Part part) {
+        autoCreatePartTypeCalendar(part, null);
+    }
+
+    @Transactional
+    public void autoCreatePartTypeCalendar(Part part, OffsetDateTime repairDate) {
         // 정비 주기가 없으면 캘린더 자동 생성 X
         if (part.getInterval() == null) {
             return;
         }
 
-        // 최근 정비일 조회 -> 최근 정비일 기준으로 다음 정비일 계산
-        Optional<Repair> lastRepairOpt = repairPort.findLastRepair(part);
-        if (lastRepairOpt.isEmpty()) {
-            return; // 정비 이력이 없으면 캘린더 자동 생성 X
+        // repairDate가 제공되면 사용, 없으면 최근 정비일 조회
+        OffsetDateTime lastRepairDate;
+        if (repairDate != null) {
+            lastRepairDate = repairDate;
+        } else {
+            Optional<Repair> lastRepairOpt = repairPort.findLastRepair(part);
+            if (lastRepairOpt.isEmpty()) {
+                return; // 정비 이력이 없으면 캘린더 자동 생성 X
+            }
+            lastRepairDate = lastRepairOpt.get().getRepairDate();
         }
 
-        Repair lastRepair = lastRepairOpt.get();
-        OffsetDateTime nextRepairDate = part.nextRepairDate(lastRepair.getRepairDate());
+        OffsetDateTime nextRepairDate = part.nextRepairDate(lastRepairDate);
         OffsetDateTime now = OffsetDateTime.now();
 
-        // next repair date가 오늘 이전이라면 오늘로 설정
-        if (nextRepairDate.isBefore(now)) {
-            nextRepairDate = now;
+        // next repair date가 오늘 이전이라면 interval을 더해서 미래 날짜가 될 때까지 반복 계산
+        while (nextRepairDate.isBefore(now)) {
+            nextRepairDate = part.nextRepairDate(nextRepairDate);
         }
 
         // 기존 자동 생성된 부품 캘린더 조회 (사용자가 수정하지 않은 것만) -> 자동 생성된 캘린더는 byUser가 false
@@ -286,11 +296,11 @@ public class CalendarService {
     }
 
     private void addRepairAndCreateNextCalendar(Part part, User user) {
-        addRepair(part, user);
-        autoCreatePartTypeCalendar(part);
+        OffsetDateTime repairDate = addRepair(part, user);
+        autoCreatePartTypeCalendar(part, repairDate);
     }
 
-    private void addRepair(Part part, User user) {
+    private OffsetDateTime addRepair(Part part, User user) {
         OffsetDateTime repairDate = OffsetDateTime.now();
         Repair repair = Repair.builder()
                 .part(part)
@@ -298,6 +308,7 @@ public class CalendarService {
                 .repairDate(repairDate)
                 .build();
         repairRepository.save(repair);
+        return repairDate;
     }
 }
 

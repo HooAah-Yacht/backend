@@ -55,9 +55,7 @@ public class RepairService {
 
         repairRepository.save(repair);
 
-        // after flush
-
-        updateCalenderAndAlarm(part);
+        updateCalenderAndAlarm(part, repairDate);
     }
 
     @Transactional
@@ -72,7 +70,7 @@ public class RepairService {
         repair.updateRepairDate(updateDate);
         repair.updateContent(content);
 
-        updateCalenderAndAlarm(part);
+        updateCalenderAndAlarm(part, updateDate);
     }
 
     @Transactional
@@ -85,13 +83,11 @@ public class RepairService {
 
         repairRepository.delete(repair);
 
-        // after flush
-
-        updateCalenderAndAlarm(part);
+        updateCalenderAndAlarm(part, null);
     }
 
-    private void updateCalenderAndAlarm(Part part) {
-        calendarService.autoCreatePartTypeCalendar(part);
+    private void updateCalenderAndAlarm(Part part, OffsetDateTime repairDate) {
+        calendarService.autoCreatePartTypeCalendar(part, repairDate);
         
         // TODO: 알림 로직 추가
     }
