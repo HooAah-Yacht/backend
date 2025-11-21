@@ -38,14 +38,16 @@ public class CalendarController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SuccessResponse> getCalendar(@PathVariable Long id) {
-        CalendarInfo response = calendarService.getCalendar(id);
+    public ResponseEntity<SuccessResponse> getCalendar(@PathVariable Long id,
+                                                        @AuthenticationPrincipal User user) {
+        CalendarInfo response = calendarService.getCalendar(id, user);
         return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK, "success", response));
     }
 
     @GetMapping
-    public ResponseEntity<SuccessResponse> getCalendars(@RequestParam(value = "partId", required = false) Long partId) {
-        List<CalendarInfo> responses = calendarService.getCalendars(partId);
+    public ResponseEntity<SuccessResponse> getCalendars(@RequestParam(value = "partId", required = false) Long partId,
+                                                         @AuthenticationPrincipal User user) {
+        List<CalendarInfo> responses = calendarService.getCalendars(partId, user);
         return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK, "success", responses));
     }
 
@@ -58,8 +60,9 @@ public class CalendarController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<SuccessResponse> deleteCalendar(@PathVariable Long id) {
-        calendarService.deleteCalendar(id);
+    public ResponseEntity<SuccessResponse> deleteCalendar(@PathVariable Long id,
+                                                          @AuthenticationPrincipal User user) {
+        calendarService.deleteCalendar(id, user);
         return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK, "success", null));
     }
 }
