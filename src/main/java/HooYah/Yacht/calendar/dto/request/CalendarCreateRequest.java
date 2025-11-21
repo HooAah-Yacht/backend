@@ -29,5 +29,7 @@ public class CalendarCreateRequest {
     private Boolean byUser;
 
     private String content;
+
+    private String review;
 }
 

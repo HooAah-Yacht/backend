@@ -29,6 +29,7 @@ public class CalendarInfo {
     private boolean byUser;
     private String content;
     private OffsetDateTime lastRepairDate;
+    private String review;
 
     public static CalendarInfo from(Calendar calendar) {
         return from(calendar, null, null);
@@ -51,6 +52,7 @@ public class CalendarInfo {
                 .byUser(calendar.isByUser())
                 .content(calendar.getContent())
                 .lastRepairDate(calendar.getLastRepairDate())
+                .review(calendar.getReview())
                 .build();
     }
 

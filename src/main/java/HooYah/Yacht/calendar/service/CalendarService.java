@@ -47,6 +47,10 @@ public class CalendarService {
                 ? Boolean.TRUE.equals(request.getByUser())
                 : (request.getType() == CalendarType.SAILING || request.getType() == CalendarType.INSPECTION);
         
+        if (!completed && request.getReview() != null && !request.getReview().isEmpty()) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+        
         // 같은 부품에 하나의 캘린더만 존재하도록 처리
         if (request.getType() == CalendarType.PART && part != null) {
             List<Calendar> existingPartCalendars = calendarRepository
@@ -64,6 +68,11 @@ public class CalendarService {
                     existingAutoCalendar.updateDates(request.getStartDate(), request.getEndDate());
                     if (request.getContent() != null) {
                         existingAutoCalendar.updateContent(request.getContent());
+                    }
+                    if (request.getReview() != null && completed) {
+                        existingAutoCalendar.updateReview(request.getReview());
+                    } else if (request.getReview() != null && !completed) {
+                        throw new CustomException(ErrorCode.BAD_REQUEST);
                     }
                     existingAutoCalendar.markAsUserModified();
                     
@@ -94,6 +103,7 @@ public class CalendarService {
                 .completed(completed)
                 .byUser(byUser)
                 .content(request.getContent())
+                .review(request.getReview())
                 .build();
 
         Calendar saved = calendarRepository.save(calendar);
@@ -163,6 +173,12 @@ public class CalendarService {
         boolean willBeCompleted = Boolean.TRUE.equals(request.getCompleted());
         boolean isCompleting = !wasCompleted && willBeCompleted;
         
+        if (!willBeCompleted && request.getReview() != null && !request.getReview().isEmpty()) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+        
+        String reviewToUpdate = willBeCompleted ? request.getReview() : null;
+        
         calendar.update(
                 request.getType(),
                 part,
@@ -172,7 +188,8 @@ public class CalendarService {
                 request.getCompleted(),
                 request.getByUser(),
                 request.getContent(),
-                calendar.getLastRepairDate()
+                calendar.getLastRepairDate(),
+                reviewToUpdate
         );
 
         if (isCompleting && user != null) {
@@ -273,6 +290,7 @@ public class CalendarService {
                     .byUser(false)
                     .content(null)
                     .lastRepairDate(lastRepairDate)
+                    .review(null)
                     .build();
             calendarRepository.save(newCalendar);
         }
