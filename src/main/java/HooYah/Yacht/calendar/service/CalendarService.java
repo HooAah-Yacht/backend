@@ -14,6 +14,7 @@ import HooYah.Yacht.repair.domain.Repair;
 import HooYah.Yacht.repair.repository.RepairPort;
 import HooYah.Yacht.repair.repository.RepairRepository;
 import HooYah.Yacht.user.domain.User;
+import HooYah.Yacht.user.repository.YachtUserPort;
 import HooYah.Yacht.yacht.domain.Yacht;
 import HooYah.Yacht.yacht.repository.YachtRepository;
 import java.time.OffsetDateTime;
@@ -34,6 +35,7 @@ public class CalendarService {
     private final YachtRepository yachtRepository;
     private final RepairPort repairPort;
     private final RepairRepository repairRepository;
+    private final YachtUserPort yachtUserPort;
 
     @Transactional
     public CalendarInfo createCalendar(CalendarCreateRequest request, User user) {
@@ -41,6 +43,10 @@ public class CalendarService {
 
         Part part = findPartOrNull(request.getPartId());
         Yacht yacht = findYachtOrNull(request.getYachtId());
+        
+        if (yacht != null) {
+            yachtUserPort.validateYachtUser(yacht, user.getId());
+        }
         
         boolean completed = Boolean.TRUE.equals(request.getCompleted());
         boolean byUser = request.getByUser() != null 
@@ -121,9 +127,14 @@ public class CalendarService {
         return CalendarInfo.from(saved, savedYacht, savedParts);
     }
 
-    public CalendarInfo getCalendar(Long id) {
+    public CalendarInfo getCalendar(Long id, User user) {
         Calendar calendar = getCalendarOrThrow(id);
         Yacht yacht = calendar.getYacht();
+        
+        if (yacht != null) {
+            yachtUserPort.validateYachtUser(yacht, user.getId());
+        }
+        
         List<Part> parts = null;
         if (yacht != null) {
             parts = partRepository.findPartListByYacht(yacht.getId());
@@ -131,10 +142,23 @@ public class CalendarService {
         return CalendarInfo.from(calendar, yacht, parts);
     }
 
-    public List<CalendarInfo> getCalendars(Long partId) {
-        List<Calendar> calendars = partId != null
-                ? calendarRepository.findAllByPartId(partId)
-                : calendarRepository.findAll();
+    public List<CalendarInfo> getCalendars(Long partId, User user) {
+        
+        List<Yacht> userYachts = yachtUserPort.findYachtListByUser(user.getId());
+        List<Long> yachtIds = userYachts.stream().map(Yacht::getId).toList();
+        
+        List<Calendar> calendars;
+        if (partId != null) {
+            calendars = calendarRepository.findAllByPartId(partId).stream()
+                    .filter(calendar -> calendar.getYacht() != null 
+                            && yachtIds.contains(calendar.getYacht().getId()))
+                    .toList();
+        } else {
+            calendars = calendarRepository.findAll().stream()
+                    .filter(calendar -> calendar.getYacht() != null 
+                            && yachtIds.contains(calendar.getYacht().getId()))
+                    .toList();
+        }
 
         return calendars.stream()
                 .map(calendar -> {
@@ -153,8 +177,18 @@ public class CalendarService {
         validateDateRange(request.getStartDate(), request.getEndDate());
 
         Calendar calendar = getCalendarOrThrow(id);
+        
+        Yacht existingYacht = calendar.getYacht();
+        if (existingYacht != null) {
+            yachtUserPort.validateYachtUser(existingYacht, user.getId());
+        }
+        
         Part part = findPartOrNull(request.getPartId());
         Yacht yacht = findYachtOrNull(request.getYachtId());
+        
+        if (yacht != null) {
+            yachtUserPort.validateYachtUser(yacht, user.getId());
+        }
         
         boolean isDateChanged = !calendar.getStartDate().equals(request.getStartDate()) 
                 || !calendar.getEndDate().equals(request.getEndDate());
@@ -205,8 +239,14 @@ public class CalendarService {
     }
 
     @Transactional
-    public void deleteCalendar(Long id) {
+    public void deleteCalendar(Long id, User user) {
         Calendar calendar = getCalendarOrThrow(id);
+        
+        Yacht yacht = calendar.getYacht();
+        if (yacht != null) {
+            yachtUserPort.validateYachtUser(yacht, user.getId());
+        }
+        
         calendarRepository.delete(calendar);
     }
 
