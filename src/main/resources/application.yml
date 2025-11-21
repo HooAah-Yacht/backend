@@ -23,3 +23,10 @@ token:
   EXPIRATION_SECOND: 999999999
     # test 환경 무한대 설정
     # 86400000
+
+# AI API 설정
+ai:
+  api:
+    base-url: ${AI_API_BASE_URL:http://localhost:5000}
+    # 기본값: http://localhost:5000
+    # 배포 시 환경변수로 변경 가능
