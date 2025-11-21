@@ -83,11 +83,11 @@ public class RepairService {
 
         repairRepository.delete(repair);
 
-        calendarService.autoCreatePartTypeCalendar(part, null);
+        calendarService.updatePartTypeCalendar(part, null);
     }
 
     private void updateCalenderAndAlarm(Part part, OffsetDateTime repairDate) {
-        calendarService.autoCreatePartTypeCalendar(part, repairDate);
+        calendarService.updatePartTypeCalendar(part, repairDate);
         
         // TODO: 알림 로직 추가
     }

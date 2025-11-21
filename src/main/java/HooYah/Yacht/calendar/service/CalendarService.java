@@ -171,7 +171,8 @@ public class CalendarService {
                 request.getEndDate(),
                 request.getCompleted(),
                 request.getByUser(),
-                request.getContent()
+                request.getContent(),
+                calendar.getLastRepairDate()
         );
 
         if (isCompleting && user != null) {
@@ -216,12 +217,12 @@ public class CalendarService {
     }
 
     @Transactional
-    public void autoCreatePartTypeCalendar(Part part) {
-        autoCreatePartTypeCalendar(part, null);
+    public void updatePartTypeCalendar(Part part) {
+        updatePartTypeCalendar(part, null);
     }
 
     @Transactional
-    public void autoCreatePartTypeCalendar(Part part, OffsetDateTime repairDate) {
+    public void updatePartTypeCalendar(Part part, OffsetDateTime repairDate) {
         // 정비 주기가 없으면 캘린더 자동 생성 X
         if (part.getInterval() == null) {
             return;
@@ -301,7 +302,7 @@ public class CalendarService {
 
     private void addRepairAndCreateNextCalendar(Part part, User user) {
         OffsetDateTime repairDate = addRepair(part, user);
-        autoCreatePartTypeCalendar(part, repairDate);
+        updatePartTypeCalendar(part, repairDate);
     }
 
     private OffsetDateTime addRepair(Part part, User user) {
