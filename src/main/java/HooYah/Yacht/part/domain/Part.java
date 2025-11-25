@@ -54,7 +54,14 @@ public class Part {
     }
 
     public OffsetDateTime nextRepairDate(OffsetDateTime oldRepairDate) {
-        return oldRepairDate.plusMonths(interval);
+        OffsetDateTime nextRepairDate = oldRepairDate.plusMonths(interval);
+        OffsetDateTime now = OffsetDateTime.now();
+
+        while (nextRepairDate.isBefore(now)) {
+            nextRepairDate = nextRepairDate(nextRepairDate);
+        }
+
+        return nextRepairDate;
     }
 
 }

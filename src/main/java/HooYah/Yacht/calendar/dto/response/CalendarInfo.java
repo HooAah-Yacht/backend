@@ -10,10 +10,14 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class CalendarInfo {
 
     private Long id;
@@ -28,7 +32,6 @@ public class CalendarInfo {
     private boolean completed;
     private boolean byUser;
     private String content;
-    private OffsetDateTime lastRepairDate;
     private String review;
 
     public static CalendarInfo from(Calendar calendar) {
@@ -51,7 +54,6 @@ public class CalendarInfo {
                 .completed(calendar.isCompleted())
                 .byUser(calendar.isByUser())
                 .content(calendar.getContent())
-                .lastRepairDate(calendar.getLastRepairDate())
                 .review(calendar.getReview())
                 .build();
     }

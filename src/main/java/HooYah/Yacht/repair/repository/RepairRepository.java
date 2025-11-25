@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 public interface RepairRepository extends JpaRepository<Repair, Long> {
     @Query("select r from Repair r where r.part.id = :partId")
     List<Repair> findRepairListByPart (@Param("partId") Long partId);
-    @Query("select r from Repair r where r.part.id = :partId order by r.repairDate desc")
+    @Query("select r from Repair r where r.part.id = :partId order by r.repairDate desc limit 1")
     Optional<Repair> findByIdOrderByRepairDateDesc(@Param("partId") Long partId);
 
     @Query(value = """

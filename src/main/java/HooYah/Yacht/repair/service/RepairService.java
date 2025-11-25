@@ -26,8 +26,6 @@ public class RepairService {
     private final RepairRepository repairRepository;
     private final PartPort partPort;
     private final YachtUserPort yachtUserPort;
-    private final RepairPort repairPort;
-    private final CalendarService calendarService;
 
     @Transactional
     public List<RepairDto> getRepairListByPart(
@@ -83,11 +81,10 @@ public class RepairService {
 
         repairRepository.delete(repair);
 
-        calendarService.updatePartTypeCalendar(part, null);
+
     }
 
     private void updateCalenderAndAlarm(Part part, OffsetDateTime repairDate) {
-        calendarService.updatePartTypeCalendar(part, repairDate);
         
         // TODO: 알림 로직 추가
     }
