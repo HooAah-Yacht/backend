@@ -1,5 +1,6 @@
 package HooYah.Yacht.yacht.domain;
 
+import HooYah.Yacht.alarm.domain.Alarm;
 import HooYah.Yacht.part.domain.Part;
 import HooYah.Yacht.user.domain.YachtUser;
 import jakarta.persistence.Column;

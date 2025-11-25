@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
     @Query("select a "
-            + "from Yacht y "
-            + "left join Part p on p.yacht = y "
-            + "left join Alarm a on a.part = p "
+            + "from Alarm a "
+            + "left join a.part p "
+            + "left join p.yacht y "
             + "where y.id in :yachtIds")
     List<Alarm> findAllByYachtIds(@Param("yachtIds") List<Long> yachtIds);
 
