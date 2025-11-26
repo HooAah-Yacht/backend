@@ -215,7 +215,7 @@ public class CalendarService {
                 reviewToUpdate
         );
 
-        if (isCompleting && user != null) {
+        if (isCompleting && user != null && request.getType().equals(CalendarType.PART)) {
             addRepair(part, user);
             calendarAlarmAutoGeneratorService.generate(part);
         }
@@ -334,7 +334,7 @@ public class CalendarService {
 
 
     private void validateDateRange(OffsetDateTime startDate, OffsetDateTime endDate) {
-        if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
+        if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
     }

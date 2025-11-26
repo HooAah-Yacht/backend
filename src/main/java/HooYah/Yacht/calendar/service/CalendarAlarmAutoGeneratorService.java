@@ -46,7 +46,7 @@ public class CalendarAlarmAutoGeneratorService {
     private void generateCalendar(Part part, OffsetDateTime nextRepairDate) {
         List<Calendar> oldCalendarList = calendarRepository.findAllByPartId(part.getId());
         oldCalendarList.stream()
-                // .filter(c->!c.isByUser())
+                .filter(c->!c.isByUser())
                 .forEach(c->calendarRepository.delete(c));
 
         calendarRepository.save(Calendar
@@ -61,6 +61,9 @@ public class CalendarAlarmAutoGeneratorService {
     }
 
     private void generateAlarm(Part part, OffsetDateTime nextRepairDate) {
+        // 이전 part의 alarm을 삭제함
+        alarmRepository.deleteAllByPart(part);
+
         Alarm alarm = Alarm
                 .builder()
                 .part(part)
