@@ -3,6 +3,8 @@ package HooYah.Yacht.calendar.dto.request;
 import HooYah.Yacht.calendar.domain.CalendarType;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,5 +35,8 @@ public class CalendarUpdateRequest {
     private String content;
 
     private String review;
+
+    private List<Long> userList = new ArrayList<>();
+
 }
 

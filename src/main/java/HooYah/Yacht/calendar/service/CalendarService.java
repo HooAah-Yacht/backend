@@ -37,6 +37,7 @@ public class CalendarService {
     private final YachtUserPort yachtUserPort;
     private final CalendarAlarmAutoGeneratorService calendarAlarmAutoGeneratorService;
     private final RepairService repairService;
+    private final CalendarUserService calendarUserService;
 
     @Transactional
     public CalendarInfo createCalendar(CalendarCreateRequest request, User user) {
@@ -89,6 +90,10 @@ public class CalendarService {
                 if (existingYacht != null) {
                     existingParts = partRepository.findPartListByYacht(existingYacht.getId());
                 }
+
+                // 이전 Calendar에 CalendarUserList 추가
+                calendarUserService.addUser(existingAutoCalendar, request.getUserList());
+
                 return CalendarInfo.from(existingAutoCalendar, existingYacht, existingParts);
             }
         }
@@ -106,6 +111,8 @@ public class CalendarService {
                 .build();
 
         Calendar saved = calendarRepository.save(calendar);
+
+        calendarUserService.addUser(saved, request.getUserList());
 
         // type 이 part가 아니라면 처리하지 않음
 
@@ -214,6 +221,8 @@ public class CalendarService {
                 request.getContent(),
                 reviewToUpdate
         );
+
+        calendarUserService.addUser(calendar, request.getUserList());
 
         if (isCompleting && user != null && request.getType().equals(CalendarType.PART)) {
             addRepair(part, user);

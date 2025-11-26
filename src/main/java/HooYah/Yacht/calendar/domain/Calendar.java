@@ -2,6 +2,7 @@ package HooYah.Yacht.calendar.domain;
 
 import HooYah.Yacht.part.domain.Part;
 import HooYah.Yacht.yacht.domain.Yacht;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,8 +13,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,6 +57,9 @@ public class Calendar {
     private String content;
 
     private String review;
+
+    @OneToMany(mappedBy = "calendar", cascade = {CascadeType.REMOVE,  CascadeType.PERSIST})
+    private List<CalendarUser> calendarUsers;
 
     @Builder
     private Calendar(CalendarType type, Part part, Yacht yacht, OffsetDateTime startDate, OffsetDateTime endDate,
@@ -106,5 +112,9 @@ public class Calendar {
 
     public void markAsUserModified() {
         this.byUser = true;
+    }
+
+    public void setCalendarUsers(List<CalendarUser> calendarUsers) {
+        this.calendarUsers = calendarUsers;
     }
 }
