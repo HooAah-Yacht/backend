@@ -1,5 +1,6 @@
 package HooYah.Yacht.part.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,9 @@ public class AddPartDto {
     private String model;
     private Long interval;
 
-    @JsonProperty("latestMaintenanceDate")
+    // Frontend는 "lastRepair"로 보냄
+    @JsonProperty("lastRepair")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDate latestMaintenanceDate;
 
 }
