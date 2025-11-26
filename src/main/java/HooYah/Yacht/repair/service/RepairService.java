@@ -51,6 +51,9 @@ public class RepairService {
 
         repairRepository.save(repair);
 
+        // ✨ Part의 latestMaintenanceDate 자동 업데이트
+        part.update(null, null, null, null, repairDate);
+
         // after flush
 
         updateCalenderAndAlarm(part);
@@ -67,6 +70,12 @@ public class RepairService {
 
         repair.updateRepairDate(updateDate);
 
+        // ✨ Part의 latestMaintenanceDate 자동 업데이트 (가장 최근 정비일로)
+        Optional<Repair> latestRepair = repairPort.findLastRepair(part);
+        if (latestRepair.isPresent()) {
+            part.update(null, null, null, null, latestRepair.get().getRepairDate());
+        }
+
         updateCalenderAndAlarm(part);
     }
 
@@ -81,6 +90,11 @@ public class RepairService {
         repairRepository.delete(repair);
 
         // after flush
+
+        // ✨ Part의 latestMaintenanceDate 자동 업데이트 (가장 최근 정비일로, 없으면 null)
+        Optional<Repair> latestRepair = repairPort.findLastRepair(part);
+        part.update(null, null, null, null, 
+                latestRepair.map(Repair::getRepairDate).orElse(null));
 
         updateCalenderAndAlarm(part);
     }

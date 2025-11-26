@@ -45,4 +45,14 @@ public class Repair {
         if (part != null)
             this.part = part;
     }
+
+    /**
+     * 정비 날짜만 업데이트
+     * @param repairDate 새 정비 날짜
+     */
+    public void updateRepairDate(LocalDate repairDate) {
+        if (repairDate != null) {
+            this.repairDate = repairDate;
+        }
+    }
 }

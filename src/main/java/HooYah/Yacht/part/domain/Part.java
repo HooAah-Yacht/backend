@@ -35,13 +35,13 @@ public class Part {
     private String model;
 
     @Column(name = "interval_value")
-    private Integer interval;
+    private Long interval;
 
     @Column(name = "latest_maintenance_date")
     private LocalDate latestMaintenanceDate;
 
     @Builder
-    public Part(Yacht yacht, String name, String manufacturer, String model, Integer interval,
+    public Part(Yacht yacht, String name, String manufacturer, String model, Long interval,
             LocalDate latestMaintenanceDate) {
         this.yacht = yacht;
         this.name = name;
@@ -51,7 +51,7 @@ public class Part {
         this.latestMaintenanceDate = latestMaintenanceDate;
     }
 
-    public void update(String name, String manufacturer, String model, Integer interval,
+    public void update(String name, String manufacturer, String model, Long interval,
             LocalDate latestMaintenanceDate) {
         if (name != null)
             this.name = name;
@@ -63,5 +63,17 @@ public class Part {
             this.interval = interval;
         if (latestMaintenanceDate != null)
             this.latestMaintenanceDate = latestMaintenanceDate;
+    }
+
+    /**
+     * 다음 정비 예정일 계산
+     * @param lastRepairDate 마지막 정비일
+     * @return 다음 정비 예정일 (interval 개월 후)
+     */
+    public LocalDate nextRepairDate(LocalDate lastRepairDate) {
+        if (this.interval == null || this.interval <= 0) {
+            return null;
+        }
+        return lastRepairDate.plusMonths(this.interval);
     }
 }

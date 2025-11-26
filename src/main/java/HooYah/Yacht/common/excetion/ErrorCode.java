@@ -9,6 +9,7 @@ public enum ErrorCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "not found"),
     CONFLICT(HttpStatus.CONFLICT, "conflict"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "bad request"),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다"),
     ;
 
     public HttpStatus status;

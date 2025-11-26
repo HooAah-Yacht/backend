@@ -36,6 +36,9 @@ public class User {
     @Column(name = "social_id")
     private String socialId;
 
+    @Column(name = "fcm_token", length = 500)
+    private String fcmToken;
+
     public void updatePassword(String newPassword, PasswordEncoder passwordEncoder) {
         if (passwordEncoder.matches(newPassword, password)) {
         }
@@ -47,6 +50,14 @@ public class User {
             return;
 
         throw new CustomException(ErrorCode.BAD_REQUEST);
+    }
+
+    /**
+     * FCM 토큰 업데이트
+     * @param fcmToken Firebase Cloud Messaging 토큰
+     */
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     @Builder

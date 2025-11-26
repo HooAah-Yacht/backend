@@ -19,4 +19,11 @@ public interface PartRepository extends JpaRepository<Part, Long> {
 
     // 부품명 검색
     List<Part> findByYachtIdAndNameContaining(Long yachtId, String keyword);
+
+    /**
+     * 특정 요트의 모든 부품 목록 조회 (Pageable 없이)
+     */
+    default List<Part> findPartListByYacht(Long yachtId) {
+        return findByYachtId(yachtId, Pageable.unpaged()).getContent();
+    }
 }

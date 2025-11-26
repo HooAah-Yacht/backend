@@ -1,7 +1,7 @@
 package HooYah.Yacht.calendar.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,13 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CalendarCreateRequest {
 
+    @NotNull
     private Long partId;
 
     @NotNull
-    private OffsetDateTime startDate;
+    private LocalDate startDate;
 
     @NotNull
-    private OffsetDateTime endDate;
+    private LocalDate endDate;
 
     private String content;
 }
