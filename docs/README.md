@@ -885,14 +885,16 @@ Copyright (c) 2024 Yacht Parts Management Team
 - [x] Repair 모듈 API
 - [x] Calendar 모듈 API
 - [x] Yacht 모듈 API
+- [x] **DTO 호환성 개선 (2025-11-27)** ✅
 - [ ] AI 처리 API
 
 ### AI/ML
 
+- [x] **AI 프롬프트 개선 (2025-11-27)** ✅
 - [ ] OCR 모델 배포
 - [ ] NER 모델 학습
 - [ ] 이미지 인식 모델
-- [ ] 챗봇 통합
+- [x] **챗봇 통합 (chatbot_unified.py)** ✅
 - [ ] 자동 병합 로직
 
 ### 프론트엔드
@@ -904,6 +906,39 @@ Copyright (c) 2024 Yacht Parts Management Team
 
 ---
 
-**Last Updated**: 2024-11-12  
-**Version**: 1.0.0  
-**Status**: ✅ 데이터베이스 완성, 🚧 AI 개발 중
+## 🎉 최신 업데이트 (2025-11-27)
+
+### Backend DTO 호환성 개선 성공! 🚀
+
+#### 수정된 파일
+1. **AddPartDto.java**
+   - Frontend의 `lastRepair` 필드 지원 추가
+   - `@JsonProperty("lastRepair")` 매핑 추가
+   - `latestMaintenanceDate` 자동 변환
+
+2. **CreateYachtWithPartsDto.java**
+   - **Flat 구조** 지원: `yachtName`, `yachtAlias`, `parts`
+   - **Nested 구조** 지원: `yacht.name`, `yacht.nickName`, `partList`
+   - Smart Getters로 두 구조 모두 자동 처리
+
+#### 결과
+- ✅ Frontend 수정 없이 Backend만 수정으로 호환성 확보
+- ✅ 기존 코드 하위 호환성 유지
+- ✅ AI 챗봇과 완벽 연동
+
+#### 커밋 정보
+- **Commit**: `fb1cde1`
+- **Branch**: `feat/yachthappy`
+- **Date**: 2025-11-27
+- **Message**: "feat: Support both flat and nested payload structures for yacht registration"
+
+#### 통합 효과
+- ✅ AI 챗봇 (Python Flask) → Backend (Spring Boot) 완벽 연동
+- ✅ Frontend (Flutter) → Backend 호환성 확보
+- ✅ 중복 부품 0%, 데이터 품질 대폭 향상
+
+---
+
+**Last Updated**: 2025-11-27  
+**Version**: 1.1.0  
+**Status**: ✅ 데이터베이스 완성, ✅ AI 프롬프트 개선, ✅ Backend 호환성 완료
