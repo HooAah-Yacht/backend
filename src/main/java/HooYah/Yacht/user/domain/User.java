@@ -48,12 +48,18 @@ public class User {
         throw new CustomException(ErrorCode.BAD_REQUEST);
     }
 
+    public void setToken(String token) {
+        if(token != null)
+            this.token = token;
+    }
+
     @Builder
-    public User(String email, String password, String name) {
+    public User(String email, String password, String name, String token) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
+        this.token = token;
     }
 
 }

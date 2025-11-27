@@ -3,6 +3,7 @@ package HooYah.Yacht.alarm.service;
 import HooYah.Yacht.alarm.domain.Alarm;
 import HooYah.Yacht.alarm.dto.AlarmDto;
 import HooYah.Yacht.alarm.repository.AlarmRepository;
+import HooYah.Yacht.common.excetion.CustomException;
 import HooYah.Yacht.part.domain.Part;
 import HooYah.Yacht.user.domain.User;
 import HooYah.Yacht.user.repository.YachtUserPort;
@@ -66,12 +67,17 @@ public class AlarmService {
     private void sendAlarm(Alarm alarm) {
         Part part = alarm.getPart();
         String message = part.getName() + "의 정비일은 " + alarm.getDate() + " 입니다";
+        // todo : message 수정할 것!
 
         List<User> yachtUserList = yachtUserPort.findUserListByYacht(part.getYacht().getId());
 
-        yachtUserList.forEach(user -> {
-            fCMService.send(user, message);
-        });
+        for(User user : yachtUserList) {
+            try{
+                fCMService.send(user, message);
+            } catch (CustomException e){
+                ; // do nothing, error 가 발생하면 단순히 넘김
+            }
+        }
     }
 
     private boolean compareDay(OffsetDateTime a, OffsetDateTime b) {
