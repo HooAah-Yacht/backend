@@ -30,7 +30,7 @@ public class CalendarUpdateRequest {
 
     private Boolean completed;
 
-    private Boolean byUser;
+    private Boolean byUser = true;
 
     private String content;
 

@@ -2,7 +2,10 @@ package HooYah.Yacht.calendar.dto.response;
 
 import HooYah.Yacht.calendar.domain.Calendar;
 import HooYah.Yacht.calendar.domain.CalendarType;
+import HooYah.Yacht.calendar.domain.CalendarUser;
 import HooYah.Yacht.part.domain.Part;
+import HooYah.Yacht.user.domain.User;
+import HooYah.Yacht.user.dto.response.UserInfoDto;
 import HooYah.Yacht.yacht.domain.Yacht;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -34,6 +37,8 @@ public class CalendarInfo {
     private String content;
     private String review;
 
+    private List<UserInfoDto> userList;
+
     public static CalendarInfo from(Calendar calendar) {
         return from(calendar, null, null);
     }
@@ -55,6 +60,7 @@ public class CalendarInfo {
                 .byUser(calendar.isByUser())
                 .content(calendar.getContent())
                 .review(calendar.getReview())
+                .userList(calendar.getCalendarUsers().stream().map(CalendarUser::getUser).map(UserInfoDto::of).toList())
                 .build();
     }
 

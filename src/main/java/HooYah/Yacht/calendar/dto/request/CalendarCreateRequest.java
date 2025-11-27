@@ -1,6 +1,7 @@
 package HooYah.Yacht.calendar.dto.request;
 
 import HooYah.Yacht.calendar.domain.CalendarType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;

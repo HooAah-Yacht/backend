@@ -40,7 +40,12 @@ public class CalendarUserService {
         if(userIdSet.size()!=userList.size())
             return List.of();
 
-        return userRepository.findAllById(userList);
+        List<User> selectedUser = userRepository.findAllById(userList);
+
+        if(selectedUser.size()!=userList.size())
+            return List.of();
+
+        return selectedUser;
     }
 
 }

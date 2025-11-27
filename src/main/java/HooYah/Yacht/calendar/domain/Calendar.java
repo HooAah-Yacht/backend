@@ -58,7 +58,7 @@ public class Calendar {
 
     private String review;
 
-    @OneToMany(mappedBy = "calendar", cascade = {CascadeType.REMOVE,  CascadeType.PERSIST})
+    @OneToMany(mappedBy = "calendar", cascade = {CascadeType.REMOVE,  CascadeType.PERSIST, CascadeType.MERGE})
     private List<CalendarUser> calendarUsers;
 
     @Builder
@@ -115,6 +115,9 @@ public class Calendar {
     }
 
     public void setCalendarUsers(List<CalendarUser> calendarUsers) {
-        this.calendarUsers = calendarUsers;
+        if(calendarUsers != null && !calendarUsers.isEmpty()) {
+            this.calendarUsers.clear();
+            this.calendarUsers = calendarUsers;
+        }
     }
 }
