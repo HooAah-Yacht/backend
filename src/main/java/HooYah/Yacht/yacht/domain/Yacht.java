@@ -1,5 +1,7 @@
 package HooYah.Yacht.yacht.domain;
 
+import HooYah.Yacht.alarm.domain.Alarm;
+import HooYah.Yacht.part.domain.Part;
 import HooYah.Yacht.user.domain.YachtUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,6 +38,9 @@ public class Yacht {
 
     @OneToMany(mappedBy = "yacht", fetch = FetchType.LAZY)
     private List<YachtUser> yachtUser;
+
+    @OneToMany(mappedBy = "yacht")
+    private List<Part> parts;
 
     public void updateName(String name) {
         if(name != null && !name.isEmpty())

@@ -33,6 +33,9 @@ public class User {
     @Column
     private String name;
 
+    @Column
+    private String token;
+
     public void updatePassword(String newPassword, PasswordEncoder passwordEncoder) {
         if(passwordEncoder.matches(newPassword, password)) {}
             this.password = newPassword;

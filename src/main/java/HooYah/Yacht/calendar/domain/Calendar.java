@@ -2,6 +2,7 @@ package HooYah.Yacht.calendar.domain;
 
 import HooYah.Yacht.part.domain.Part;
 import HooYah.Yacht.yacht.domain.Yacht;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,8 +13,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,20 +49,21 @@ public class Calendar {
     private Yacht yacht;
 
     @Column(nullable = false)
-    private boolean completed;
+    private boolean completed = false;
 
     @Column(nullable = false)
-    private boolean byUser; // 사용자가 직접 수정했는지 여부
+    private boolean byUser = false; // 사용자가 직접 수정했는지 여부
 
     private String content;
 
-    private OffsetDateTime lastRepairDate;
-
     private String review;
+
+    @OneToMany(mappedBy = "calendar", cascade = {CascadeType.REMOVE,  CascadeType.PERSIST, CascadeType.MERGE})
+    private List<CalendarUser> calendarUsers;
 
     @Builder
     private Calendar(CalendarType type, Part part, Yacht yacht, OffsetDateTime startDate, OffsetDateTime endDate,
-                     boolean completed, boolean byUser, String content, OffsetDateTime lastRepairDate, String review) {
+                     boolean completed, boolean byUser, String content, String review) {
         this.type = type;
         this.part = part;
         this.yacht = yacht;
@@ -68,35 +72,30 @@ public class Calendar {
         this.completed = completed;
         this.byUser = byUser;
         this.content = content;
-        this.lastRepairDate = lastRepairDate;
         this.review = review;
     }
 
-    public void update(CalendarType type, Part part, Yacht yacht, OffsetDateTime startDate, OffsetDateTime endDate,
-                       Boolean completed, Boolean byUser, String content, OffsetDateTime lastRepairDate, String review) {
-        this.type = type;
-        this.part = part;
-        this.yacht = yacht;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        if (completed != null) {
-            this.completed = completed;
-        }
-        if (byUser != null) {
-            this.byUser = byUser;
-        }
-        this.content = content;
-        this.lastRepairDate = lastRepairDate;
-        this.review = review;
+    public void update(
+            CalendarType type,
+            Part part, Yacht yacht,
+            OffsetDateTime startDate, OffsetDateTime endDate,
+            Boolean completed, Boolean byUser,
+            String content, String review
+    ) {
+        if(type != null) this.type = type;
+        if(part != null) this.part = part;
+        if(yacht != null) this.yacht = yacht;
+        if(startDate != null) this.startDate = startDate;
+        if(endDate != null) this.endDate = endDate;
+        if (completed != null) this.completed = completed;
+        if (byUser != null) this.byUser = byUser;
+        if(content != null && !content.isEmpty()) this.content = content;
+        if(review != null && !review.isEmpty()) this.review = review;
     }
 
     public void updateDates(OffsetDateTime startDate, OffsetDateTime endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
-    }
-
-    public void updateLastRepairDate(OffsetDateTime lastRepairDate) {
-        this.lastRepairDate = lastRepairDate;
     }
 
     public void updateContent(String content) {
@@ -113,5 +112,12 @@ public class Calendar {
 
     public void markAsUserModified() {
         this.byUser = true;
+    }
+
+    public void setCalendarUsers(List<CalendarUser> calendarUsers) {
+        if(calendarUsers != null && !calendarUsers.isEmpty()) {
+            this.calendarUsers.clear();
+            this.calendarUsers = calendarUsers;
+        }
     }
 }

@@ -1,5 +1,7 @@
 package HooYah.Yacht.part.domain;
 
+import HooYah.Yacht.alarm.domain.Alarm;
+import HooYah.Yacht.calendar.domain.Calendar;
 import HooYah.Yacht.yacht.domain.Yacht;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,9 +11,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,6 +47,12 @@ public class Part {
     @Column(name = "`interval`")
     private Long interval; // 몇달
 
+    @OneToMany(mappedBy = "part")
+    private List<Alarm> alarms;
+
+    @OneToMany(mappedBy = "part")
+    private List<Calendar> calendars;
+
     public void update(String name, String manufacturer, String model) {
         this.name = name;
         this.manufacturer = manufacturer;
@@ -54,7 +64,14 @@ public class Part {
     }
 
     public OffsetDateTime nextRepairDate(OffsetDateTime oldRepairDate) {
-        return oldRepairDate.plusMonths(interval);
+        OffsetDateTime nextRepairDate = oldRepairDate.plusMonths(interval);
+        OffsetDateTime now = OffsetDateTime.now();
+
+        while (nextRepairDate.isBefore(now)) {
+            nextRepairDate = nextRepairDate(nextRepairDate);
+        }
+
+        return nextRepairDate;
     }
 
 }

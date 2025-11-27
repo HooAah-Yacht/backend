@@ -1,12 +1,17 @@
 package HooYah.Yacht.calendar.dto.request;
 
 import HooYah.Yacht.calendar.domain.CalendarType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class CalendarCreateRequest {
 
@@ -19,17 +24,20 @@ public class CalendarCreateRequest {
     private Long yachtId;
 
     @NotNull
-    private OffsetDateTime startDate;
+    private OffsetDateTime startDate = OffsetDateTime.now();
 
     @NotNull
-    private OffsetDateTime endDate;
+    private OffsetDateTime endDate = OffsetDateTime.now();
 
-    private Boolean completed;
+    private Boolean completed = false;
 
-    private Boolean byUser;
+    private Boolean byUser = true;
 
     private String content;
 
     private String review;
+
+    private List<Long> userList = new ArrayList<>();
+
 }
 

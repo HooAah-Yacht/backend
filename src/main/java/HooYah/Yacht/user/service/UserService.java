@@ -20,14 +20,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void registerWithEmail(RegisterDto dto) {
+    public User registerWithEmail(RegisterDto dto) {
         if(userRepository.findByEmail(dto.getEmail()).isPresent())
             throw new CustomException(ErrorCode.CONFLICT);
 
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
 
         User user = dto.toEntity(encodedPassword);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Transactional

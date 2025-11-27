@@ -1,5 +1,6 @@
 package HooYah.Yacht.repair.service;
 
+import HooYah.Yacht.calendar.service.CalendarAlarmAutoGeneratorService;
 import HooYah.Yacht.calendar.service.CalendarService;
 import HooYah.Yacht.common.excetion.CustomException;
 import HooYah.Yacht.common.excetion.ErrorCode;
@@ -26,8 +27,7 @@ public class RepairService {
     private final RepairRepository repairRepository;
     private final PartPort partPort;
     private final YachtUserPort yachtUserPort;
-    private final RepairPort repairPort;
-    private final CalendarService calendarService;
+    private final CalendarAlarmAutoGeneratorService calendarAlarmAutoGeneratorService;
 
     @Transactional
     public List<RepairDto> getRepairListByPart(
@@ -55,7 +55,7 @@ public class RepairService {
 
         repairRepository.save(repair);
 
-        updateCalenderAndAlarm(part, repairDate);
+        updateCalenderAndAlarm(part);
     }
 
     @Transactional
@@ -70,7 +70,7 @@ public class RepairService {
         repair.updateRepairDate(updateDate);
         repair.updateContent(content);
 
-        updateCalenderAndAlarm(part, updateDate);
+        updateCalenderAndAlarm(part);
     }
 
     @Transactional
@@ -83,12 +83,11 @@ public class RepairService {
 
         repairRepository.delete(repair);
 
-        calendarService.updatePartTypeCalendar(part, null);
+
     }
 
-    private void updateCalenderAndAlarm(Part part, OffsetDateTime repairDate) {
-        calendarService.updatePartTypeCalendar(part, repairDate);
-        
+    private void updateCalenderAndAlarm(Part part) {
+        calendarAlarmAutoGeneratorService.generate(part);
         // TODO: 알림 로직 추가
     }
 
