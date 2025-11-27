@@ -1,6 +1,7 @@
 package HooYah.Yacht.user.domain;
 
 import HooYah.Yacht.calendar.domain.CalendarUser;
+import HooYah.Yacht.chat.domain.ChatConversation;
 import HooYah.Yacht.common.excetion.CustomException;
 import HooYah.Yacht.common.excetion.ErrorCode;
 import jakarta.persistence.CascadeType;
@@ -45,6 +46,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<CalendarUser> calendarUsers;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ChatConversation> chatConversations;
 
     public void updatePassword(String newPassword, PasswordEncoder passwordEncoder) {
         if(passwordEncoder.matches(newPassword, password)) {}

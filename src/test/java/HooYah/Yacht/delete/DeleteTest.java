@@ -11,6 +11,8 @@ import HooYah.Yacht.user.repository.UserRepository;
 import HooYah.Yacht.user.service.UserService;
 import HooYah.Yacht.yacht.repository.YachtRepository;
 import HooYah.Yacht.yacht.service.YachtService;
+import HooYah.Yacht.chat.repository.ChatConversationRepository;
+import HooYah.Yacht.chat.repository.ChatMessageRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.Optional;
@@ -55,6 +57,12 @@ public class DeleteTest {
     
     @Autowired
     private YachtRepository yachtRepository;
+    
+    @Autowired
+    private ChatConversationRepository chatConversationRepository;
+    
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
     
     @PersistenceContext
     private EntityManager em;
@@ -176,6 +184,23 @@ public class DeleteTest {
         // 삭제 확인
         Optional<?> deletedUser = userRepository.findById(userId);
         Assertions.assertThat(deletedUser).isEmpty();
+    }
+
+    @Test
+    public void deleteChatConversation() {
+        // DB에서 확인한 ChatConversation ID를 입력하세요
+        Long conversationId = 1L;
+
+        // ChatConversation 삭제 (repository 직접 사용)
+        chatConversationRepository.findById(conversationId)
+                .ifPresent(chatConversationRepository::delete);
+
+        em.flush();
+        em.clear();
+
+        // 삭제 확인
+        Optional<?> deletedConversation = chatConversationRepository.findById(conversationId);
+        Assertions.assertThat(deletedConversation).isEmpty();
     }
 
 }
