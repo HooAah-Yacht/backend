@@ -18,11 +18,14 @@ public class RegisterDto {
     @NotEmpty
     private String name;
 
+    private String token;
+
     public User toEntity(String encodedPassword) {
         return User.builder()
                 .email(email)
                 .password(encodedPassword)
                 .name(name)
+                .token(token)
                 .build();
     }
 }

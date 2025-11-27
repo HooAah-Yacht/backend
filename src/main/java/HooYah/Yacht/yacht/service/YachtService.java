@@ -78,10 +78,6 @@ public class YachtService {
     public long getYachtCode(Long yachtId, User user) {
         Yacht yacht = yachtUserPort.findYacht(yachtId, user.getId());
 
-        Optional<Yacht> yachtOptional = yachtUserRepository.findYacht(yacht.getId(), user.getId());
-        if (yachtOptional.isPresent())
-            throw new CustomException(ErrorCode.CONFLICT);
-
         return toHash(yacht.getId());
     }
 
@@ -92,6 +88,10 @@ public class YachtService {
         Yacht yacht = yachtRepository.findById(yachtId).orElseThrow(
                 ()->new CustomException(ErrorCode.NOT_FOUND)
         );
+
+        Optional<Yacht> yachtOptional = yachtUserRepository.findYacht(yacht.getId(), user.getId());
+        if (yachtOptional.isPresent())
+            throw new CustomException(ErrorCode.CONFLICT);
 
         yachtUserPort.addUser(yacht, user);
     }

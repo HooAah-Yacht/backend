@@ -2,7 +2,10 @@ package HooYah.Yacht.calendar.dto.response;
 
 import HooYah.Yacht.calendar.domain.Calendar;
 import HooYah.Yacht.calendar.domain.CalendarType;
+import HooYah.Yacht.calendar.domain.CalendarUser;
 import HooYah.Yacht.part.domain.Part;
+import HooYah.Yacht.user.domain.User;
+import HooYah.Yacht.user.dto.response.UserInfoDto;
 import HooYah.Yacht.yacht.domain.Yacht;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -10,10 +13,14 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class CalendarInfo {
 
     private Long id;
@@ -28,8 +35,9 @@ public class CalendarInfo {
     private boolean completed;
     private boolean byUser;
     private String content;
-    private OffsetDateTime lastRepairDate;
     private String review;
+
+    private List<UserInfoDto> userList;
 
     public static CalendarInfo from(Calendar calendar) {
         return from(calendar, null, null);
@@ -51,8 +59,9 @@ public class CalendarInfo {
                 .completed(calendar.isCompleted())
                 .byUser(calendar.isByUser())
                 .content(calendar.getContent())
-                .lastRepairDate(calendar.getLastRepairDate())
                 .review(calendar.getReview())
+                .userList(calendar.getCalendarUsers() !=null ?
+                        calendar.getCalendarUsers().stream().map(CalendarUser::getUser).map(UserInfoDto::of).toList() : null)
                 .build();
     }
 

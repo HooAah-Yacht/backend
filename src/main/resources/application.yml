@@ -27,6 +27,9 @@ spring:
         file:
           model: "gemini-2.5-flash"
 
+firebase:
+  credentials: classpath:firebase.json
+
 token:
   SECRET_KEY: ${SECRET_KEY}
   EXPIRATION_SECOND: 999999999
