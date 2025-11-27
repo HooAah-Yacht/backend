@@ -60,7 +60,8 @@ public class CalendarInfo {
                 .byUser(calendar.isByUser())
                 .content(calendar.getContent())
                 .review(calendar.getReview())
-                .userList(calendar.getCalendarUsers().stream().map(CalendarUser::getUser).map(UserInfoDto::of).toList())
+                .userList(calendar.getCalendarUsers() !=null ?
+                        calendar.getCalendarUsers().stream().map(CalendarUser::getUser).map(UserInfoDto::of).toList() : null)
                 .build();
     }
 
