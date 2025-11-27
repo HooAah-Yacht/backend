@@ -58,7 +58,7 @@ public class UserController {
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", UserInfoDto.of(user)));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/api/user")
     public ResponseEntity deleteUser(@AuthenticationPrincipal User user) {
         userService.deleteUser(user);
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK, "success", null));
