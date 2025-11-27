@@ -30,7 +30,7 @@ public class FCMService {
             log.info("FCM 메시지 전송 성공: {}, response {}", body, response);
 
         } catch (Exception e) {
-            log.error("FCM 메시지 전송 실패", e);
+            e.printStackTrace();
             throw new CustomException(ErrorCode.CONFLICT);
         }
     }
