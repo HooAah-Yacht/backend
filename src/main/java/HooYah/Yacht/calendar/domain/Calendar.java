@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -58,7 +59,7 @@ public class Calendar {
 
     private String review;
 
-    @OneToMany(mappedBy = "calendar", cascade = {CascadeType.REMOVE,  CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "calendar", cascade = {CascadeType.REMOVE,  CascadeType.PERSIST}, orphanRemoval = true)
     private List<CalendarUser> calendarUsers;
 
     @Builder
@@ -116,8 +117,9 @@ public class Calendar {
 
     public void setCalendarUsers(List<CalendarUser> calendarUsers) {
         if(calendarUsers != null && !calendarUsers.isEmpty()) {
-            this.calendarUsers.clear();
-            this.calendarUsers = calendarUsers;
+            if (this.calendarUsers != null || !calendarUsers.isEmpty())
+                this.calendarUsers.clear();
+            this.calendarUsers.addAll(calendarUsers);
         }
     }
 }
