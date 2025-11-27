@@ -18,7 +18,14 @@ spring:
           time_zone: UTC
     hibernate:
       ddl-auto: update
-
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+        chat:
+          model: "gemini-2.5-flash"
+        file:
+          model: "gemini-2.5-flash"
 
 token:
   SECRET_KEY: ${SECRET_KEY}
