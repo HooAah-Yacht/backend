@@ -30,12 +30,33 @@ public class PartService {
     public List<PartDto> getParListByYacht(Long yachtId, User user) {
         Yacht yacht = yachtUserPort.findYacht(yachtId, user.getId());
         List<Part> partList = partRepository.findPartListByYacht(yachtId);
-        return partList.stream().map(PartDto::of).toList();
+        return partList.stream().map(part -> {
+            PartDto dto = PartDto.of(part);
+            // 최신 정비일(Repair 테이블 기준) 조회
+            Optional<Repair> latestRepair = repairPort.findLastRepair(part);
+            LocalDate lastRepairDate = latestRepair.map(Repair::getRepairDate).orElse(null);
+            dto.setLastRepairDate(lastRepairDate);
+            // 다음 정비 예정일 계산 (interval 기반)
+            LocalDate nextRepairDate = (lastRepairDate != null) ? part.nextRepairDate(lastRepairDate) : null;
+            dto.setNextRepairDate(nextRepairDate);
+            return dto;
+        }).toList();
     }
 
     @Transactional
     public void addPart(AddPartDto dto, User user) {
         Yacht yacht = yachtUserPort.findYacht(dto.getYachtId(), user.getId());
+
+        // 기본값 적용: 최근정비일 미입력 시 now(), interval 미입력 시 12개월
+        LocalDate latestMaintenanceDate = dto.getLatestMaintenanceDate();
+        if (latestMaintenanceDate == null) {
+            latestMaintenanceDate = LocalDate.now();
+        }
+
+        Long interval = dto.getInterval();
+        if (interval == null) {
+            interval = 12L;
+        }
 
         Part newPart = Part
                 .builder()
@@ -43,10 +64,12 @@ public class PartService {
                 .name(dto.getName())
                 .manufacturer(dto.getManufacturer())
                 .model(dto.getModel())
-                .interval(dto.getInterval())
-                .latestMaintenanceDate(dto.getLatestMaintenanceDate())
+                .interval(interval)
+                .latestMaintenanceDate(latestMaintenanceDate)
                 .build();
         partRepository.save(newPart);
+
+        // TODO: 캘린더/알림 생성 로직 연결 (nextRepairDate 기준으로 스케줄 생성)
     }
 
     @Transactional
@@ -54,9 +77,10 @@ public class PartService {
         Part part = partPort.findPart(dto.getId());
         yachtUserPort.validateYachtUser(part.getYacht(), user.getId());
 
-        part.update(dto.getName(), dto.getManufacturer(), dto.getModel(), dto.getInterval(), dto.getLatestMaintenanceDate());
+        part.update(dto.getName(), dto.getManufacturer(), dto.getModel(), dto.getInterval(),
+                dto.getLatestMaintenanceDate());
 
-        if(dto.getInterval() != null) {
+        if (dto.getInterval() != null) {
             updateCalenderAndAlarm(part);
         }
     }
@@ -78,18 +102,18 @@ public class PartService {
         // 이전 repair 정보가 있는지 확인
         Optional<Repair> lastRepair = repairPort.findLastRepair(part);
 
-        if(lastRepair.isEmpty())
+        if (lastRepair.isEmpty())
             return; // 정비 이력이 없는 경우 켈린더 알림 생성 / 수정하지 않음
 
         // 다음 repair date 구함
         LocalDate nextRepairDate = part.nextRepairDate(lastRepair.get().getRepairDate());
 
         // 켈린더 최신화 (캘린더에 is update column 필요 -> 사용자가 설정한 캘린더는 수정하지 않음)
-            // 사용자가 수정했다면 수정하지 않음
-            // next repair date가 오늘 이후라면 -> 수정함
-            // next repqir date가 오늘 이전이라면 -> 오늘로 캘린더 생성?
+        // 사용자가 수정했다면 수정하지 않음
+        // next repair date가 오늘 이후라면 -> 수정함
+        // next repqir date가 오늘 이전이라면 -> 오늘로 캘린더 생성?
         // 알림
-            // 이전 알림의 날짜를 수정함 : 다른 로직 없어도 됨 그냥 수정
+        // 이전 알림의 날짜를 수정함 : 다른 로직 없어도 됨 그냥 수정
     }
 
 }

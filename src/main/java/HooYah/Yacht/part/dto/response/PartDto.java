@@ -22,6 +22,12 @@ public class PartDto {
     @JsonProperty("latestMaintenanceDate")
     private LocalDate latestMaintenanceDate;
 
+    @JsonProperty("lastRepairDate")
+    private LocalDate lastRepairDate;
+
+    @JsonProperty("nextRepairDate")
+    private LocalDate nextRepairDate;
+
     public static PartDto of(Part part) {
         PartDto partDto = new PartDto();
         partDto.id = part.getId();
