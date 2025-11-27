@@ -116,10 +116,15 @@ public class Calendar {
     }
 
     public void setCalendarUsers(List<CalendarUser> calendarUsers) {
-        if(calendarUsers != null && !calendarUsers.isEmpty()) {
-            if (this.calendarUsers != null || !calendarUsers.isEmpty())
-                this.calendarUsers.clear();
-            this.calendarUsers.addAll(calendarUsers);
-        }
+        if (calendarUsers == null || calendarUsers.isEmpty())
+            return;
+
+        if (this.calendarUsers == null)
+            this.calendarUsers = new ArrayList<>();
+
+        if (!calendarUsers.isEmpty())
+            this.calendarUsers.clear();
+
+        this.calendarUsers.addAll(calendarUsers);
     }
 }

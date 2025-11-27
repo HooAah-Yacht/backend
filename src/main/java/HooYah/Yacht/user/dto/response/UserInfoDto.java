@@ -14,6 +14,8 @@ public class UserInfoDto {
     private String name;
 
     public static UserInfoDto of(User user) {
+        if(user == null) return new UserInfoDto();
+
         UserInfoDto dto = new UserInfoDto();
         dto.email = user.getEmail();
         dto.name = user.getName();

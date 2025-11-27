@@ -1,6 +1,7 @@
 package HooYah.Yacht.repair.repository;
 
 import HooYah.Yacht.repair.domain.Repair;
+import HooYah.Yacht.user.domain.User;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +24,6 @@ public interface RepairRepository extends JpaRepository<Repair, Long> {
             ) t
             where t.last_date = 1 """, nativeQuery = true)
     List<Repair> findAllLastRepair(@Param("partIdList") List<Long> partIdList);
+
+    List<Repair> findByUser(User user);
 }

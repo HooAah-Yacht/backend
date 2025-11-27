@@ -53,4 +53,8 @@ public class Repair {
             this.content = content;
     }
 
+    public void setUserNull() {
+        this.user = null;
+    }
+
 }
