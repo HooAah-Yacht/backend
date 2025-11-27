@@ -1,10 +1,8 @@
 package HooYah.Yacht.yacht.domain;
 
 import HooYah.Yacht.alarm.domain.Alarm;
-import HooYah.Yacht.calendar.domain.Calendar;
 import HooYah.Yacht.part.domain.Part;
 import HooYah.Yacht.user.domain.YachtUser;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,13 +36,10 @@ public class Yacht {
     @Column
     private String nickName;
 
-    @OneToMany(mappedBy = "yacht", cascade = CascadeType.REMOVE)
-    private List<Calendar> calendars;
-
-    @OneToMany(mappedBy = "yacht", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "yacht", fetch = FetchType.LAZY)
     private List<YachtUser> yachtUser;
 
-    @OneToMany(mappedBy = "yacht", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "yacht")
     private List<Part> parts;
 
     public void updateName(String name) {

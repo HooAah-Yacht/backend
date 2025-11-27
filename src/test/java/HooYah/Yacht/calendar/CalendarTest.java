@@ -205,7 +205,7 @@ public class CalendarTest {
         Assertions.assertThat(lastRepair.get().getRepairDate().toLocalDate()).isEqualTo(now.toLocalDate());
 
         // 해당 part의 알림이 새로 생성되었는지 확인
-        List<Alarm> alarms = alarmRepository.findAllByYachtIds(List.of(yacht.getId()), OffsetDateTime.now());
+        List<Alarm> alarms = alarmRepository.findAllByYachtIds(List.of(yacht.getId()));
         Assertions.assertThat(alarms.getLast().getDate().toLocalDate()).isEqualTo(part.nextRepairDate(now).toLocalDate());
 
         // 해당 part의 calendar가 새로 생성되었는지 확인 -> is user == false이고, start date가 part.nextDate와 같음

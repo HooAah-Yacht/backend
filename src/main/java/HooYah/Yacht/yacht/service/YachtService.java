@@ -56,10 +56,8 @@ public class YachtService {
         yacht.updateNickName(dto.getNickName());
     }
 
-    @Transactional
-    public void deleteYacht(User user, Long yachtId) {
-        Yacht yacht = yachtUserPort.findYacht(yachtId, user.getId()); // throw not found
-        yachtRepository.delete(yacht);
+    public void deleteYacht() {
+        // not yet
     }
 
     public List<ResponseYachtDto> yachtList(User user) {
