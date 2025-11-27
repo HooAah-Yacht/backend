@@ -31,7 +31,7 @@ public class AlarmService {
     public List<AlarmDto> getAlarmList(User user) {
         List<Yacht> yachtList = yachtUserPort.findYachtListByUser(user.getId());
 
-        List<Alarm> alarmList = alarmRepository.findAllByYachtIds(yachtList.stream().map(Yacht::getId).toList());
+        List<Alarm> alarmList = alarmRepository.findAllByYachtIds(yachtList.stream().map(Yacht::getId).toList(), OffsetDateTime.now().plusWeeks(1));
         return alarmList.stream().map(AlarmDto::of).toList();
     }
 
