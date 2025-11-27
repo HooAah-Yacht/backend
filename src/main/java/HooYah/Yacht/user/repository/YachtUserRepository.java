@@ -18,4 +18,6 @@ public interface YachtUserRepository extends JpaRepository<YachtUser,Integer> {
     List<YachtUser> findByUser(User user);
 
     List<YachtUser> findByYacht(Yacht yacht);
+
+    void deleteByYachtAndUser(Yacht yacht, User user);
 }

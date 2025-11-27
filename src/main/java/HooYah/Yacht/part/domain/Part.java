@@ -2,7 +2,9 @@ package HooYah.Yacht.part.domain;
 
 import HooYah.Yacht.alarm.domain.Alarm;
 import HooYah.Yacht.calendar.domain.Calendar;
+import HooYah.Yacht.repair.domain.Repair;
 import HooYah.Yacht.yacht.domain.Yacht;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -47,11 +49,14 @@ public class Part {
     @Column(name = "`interval`")
     private Long interval; // 몇달
 
-    @OneToMany(mappedBy = "part")
+    @OneToMany(mappedBy = "part", cascade = CascadeType.REMOVE)
     private List<Alarm> alarms;
 
-    @OneToMany(mappedBy = "part")
+    @OneToMany(mappedBy = "part", cascade = CascadeType.REMOVE)
     private List<Calendar> calendars;
+
+    @OneToMany(mappedBy = "part", cascade = CascadeType.REMOVE)
+    private List<Repair> repairs;
 
     public void update(String name, String manufacturer, String model) {
         this.name = name;
